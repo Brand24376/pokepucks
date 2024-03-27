@@ -344,7 +344,7 @@ io.on('connection', socket => {
                     attack() {
                         // attack
                         let att;
-                        att = Math.floor(Math.random() * 100) 
+                        att = Math.floor(Math.random() * 100)
                         if (att > 100) {
                             att = 100;
                         };
@@ -428,7 +428,7 @@ io.on('connection', socket => {
                     stage_loop() {
                         switch (this.phase) {
                             case 0: // Top off
-                            console.log('Arena:', this.arena);
+                                console.log('Arena:', this.arena);
                                 console.log('case 0 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
@@ -650,9 +650,9 @@ io.on('connection', socket => {
                                     this.stage = 'end';
                                     console.log('player 1 wins');
                                 };
-                                if(this.arena.length == 0 && this.players[0].hp.length > 0 && this.players[1].hp.length > 0){
+                                if (this.arena.length == 0 && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
                                     let num = Math.floor(Math.random() * 8); + 1;
-                                    for(let i = 0; i < num; i++){
+                                    for (let i = 0; i < num; i++) {
                                         this.arena.push(new Puck('pog', 1, 'down'));
                                     }
                                 }
@@ -724,10 +724,18 @@ io.on('connection', socket => {
         console.log(`Player ${socket.id} is ready in room ${room}. Total ready players: ${readyPlayers.get(room).length}`);
 
         let roomSize = getUsersInRoom(room).length;
-        if (readyPlayers.get(room).length === roomSize) {
+        if (roomSize >= 2 && readyPlayers.get(room).length === roomSize) {
             console.log(`All players are ready in room ${room}. Starting game.`);
             io.to(room).emit('all players ready');
+        } else if (roomSize < 2) {
+            console.log(`Not enough players in room ${room}. Waiting for more players.`);
         };
+    });
+
+    // For testing purposes
+    socket.on('test start game', function (room, callback) {
+        console.log(`Test start game in room ${room}.`);
+        io.to(room).emit('all players ready');
     });
 
     // When user leaves a room - to all others

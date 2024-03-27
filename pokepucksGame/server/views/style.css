@@ -2,7 +2,6 @@
 Project: PokePucks
 Author: Brandon Camacho
 Editors: Brandon Camacho, Antonio Cruz
-{ 172.16.3.124:3000 }
 <Description>
 The css for the chatroom.
 \***************************************************************************/
@@ -14,7 +13,7 @@ The css for the chatroom.
     font-family: Arial, Helvetica, sans-serif;
 }
 
-section{
+section {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -25,13 +24,13 @@ section{
     align-items: center;
 }
 
-button{
+button {
     background-color: yellow;
     width: 200px;
     height: 60px
 }
 
-.tet{
+.tet {
     color: black;
     font-size: 150px;
     margin-top: 50px;
@@ -45,7 +44,7 @@ button{
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
-.set{
+.set {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -55,10 +54,10 @@ button{
     text-align: center;
     border-style: groove;
     border-color: rgb(241, 52, 52);
-    
+
 }
 
-.bet{
+.bet {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -70,43 +69,43 @@ button{
     border-color: rgb(252, 60, 60);
 }
 
-.het{
+.het {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.ket{
+.ket {
     margin-top: 10px;
     text-align: center;
 }
 
-.qet{
+.qet {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.det{
+.det {
     width: 25%;
     margin-top: 15px;
     margin-left: 710px;
     border-style: solid;
 }
 
-.yet{
+.yet {
     border: none;
     padding: 10px;
     margin-top: 15px;
     margin-left: 700px;
 }
 
-.uet{
+.uet {
     margin-top: 15px;
     margin-left: 835px;
 }
 
-body{
+body {
     color: black;
     background-image: url("img/bc.png");
 }
@@ -253,6 +252,7 @@ label[for="ready-checkbox"] {
     max-height: 0%;
     max-width: 0%;
 }
+
 .pokemon {
     image-rendering: auto;
     visibility: hidden;
