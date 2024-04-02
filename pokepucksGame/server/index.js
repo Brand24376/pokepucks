@@ -43,7 +43,7 @@ function getLocalIP() {
 const IP_ADDRESS = getLocalIP();
 
 // Define the urls
-const AUTH_URL = `http://172.16.3.162:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
+const AUTH_URL = `http://172.16.3.116:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
 const THIS_URL = `http://${IP_ADDRESS}:3000/login`; // `http://ipAddressOfThisServer:port/login`;
 const GAME_URL = `http://${IP_ADDRESS}:3000/`; // `http://ipAddressOfThisServer:port/`;
 
@@ -1153,6 +1153,14 @@ io.on('connection', socket => {
                                  * If a player has no pogs in their stack, move that player's slammer into the center.
                                  * The phase is increased by 1.
                                 */
+
+                                if (this.arena === undefined && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
+                                    this.arena = [];
+                                    for (let i = 0; i < Math.floor(Math.random() * 8) + 1; i++) {
+                                        this.arena.push(new Puck('pog', 1, 'down'));
+                                    }
+                                }
+
                                 console.log('case 1 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
@@ -1165,6 +1173,13 @@ io.on('connection', socket => {
                                     tempArena = this.arena;
                                     this.arena = [];
                                     this.arena.push(this.players[0].Slammer);
+                                };
+                                if (this.players[1].hp.length <= 0 && this.turn === 0) {
+                                    this.players[1].pogsBackup = [...this.players[1].hp];
+                                    this.players[1].hp = [];
+                                    tempArena = this.arena;
+                                    this.arena = [];
+                                    this.arena.push(this.players[1].Slammer);
                                 };
 
                                 this.phase++;
@@ -1304,19 +1319,21 @@ io.on('connection', socket => {
                                         this.arena.splice(slammerIndex, 1);
                                     };
                                     // Add the pogs back into the arena from tempArena
-                                    this.arena = [...this.arena, ...tempArena];
-                                    tempArena = [];
+
                                 } else {
                                     // Remove the slammer from the arena
                                     const slammerIndex = this.arena.findIndex(pog => pog === this.players[1].Slammer);
                                     if (slammerIndex !== -1) {
                                         this.arena.splice(slammerIndex, 1);
                                     };
-                                    // Add the pogs back into the arena from tempArena
-                                    this.arena = [...this.arena, tempArena];
-                                    tempArena = [];
-                                };
+                                }
                                 console.log('Arena:', this.arena.hp);
+                                if (this.arena === undefined && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
+                                    let num = Math.floor(Math.random() * 8); + 1;
+                                    for (let i = 0; i < num; i++) {
+                                        this.arena.push(new Puck('pog', 1, 'down'));
+                                    }
+                                }
                                 this.phase++;
                                 break;
                             case 4://Discard pucks
@@ -1345,7 +1362,11 @@ io.on('connection', socket => {
                                 console.log('case 5 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
+
+                                if (this.arena === undefined && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
+
                                 if (this.arena.length == 0 && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
+
                                     let num = Math.floor(Math.random() * 8); + 1;
                                     for (let i = 0; i < num; i++) {
                                         this.arena.push(new Puck('pog', 1, 'down'));
