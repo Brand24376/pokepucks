@@ -322,7 +322,7 @@ function startGameClient() {
             console.log('Game started');
         };
     });
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
         stepGameClient();
     };
 };
