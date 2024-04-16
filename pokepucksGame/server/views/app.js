@@ -7,12 +7,14 @@ Editors: Brandon Camacho, Logan Cruz
 Code for the frontend side for the PokePucks game.
 \***************************************************************************/
 // Chatroom Code
+// Gets the ip address of the server
+const IP_ADDRESS = window.location.hostname;
 // Define the urls
-const ROOT_URL = 'http://fillerIP:3000/'; // 'http://ipAddressOfThisServer:port/';
-const LOGIN_URL = 'http://fillerIP:3000/login'; // 'http://ipAddressOfThisServer:port/login';
-const LOGOUT_URL = 'http://fillerIP:3000/logout'; // 'http://ipAddressOfThisServer:port/logout';
-const LOBBY_URL = 'http://fillerIP:3000/lobby'; // 'http://ipAddressOfThisServer:port/lobby';
-const CHATROOM_URL = 'http://fillerIP:3000/chatroom'; // 'http://ipAddressOfThisServer:port/chatroom';
+const ROOT_URL = `http://${IP_ADDRESS}:3000/`; // `http://ipAddressOfThisServer:port/`;
+const LOGIN_URL = `http://${IP_ADDRESS}:3000/login`; // `http://ipAddressOfThisServer:port/login`;
+const LOGOUT_URL = `http://${IP_ADDRESS}:3000/logout`; // `http://ipAddressOfThisServer:port/logout`;
+const LOBBY_URL = `http://${IP_ADDRESS}:3000/lobby`; // `http://ipAddressOfThisServer:port/lobby`;
+const CHATROOM_URL = `http://${IP_ADDRESS}:3000/chatroom`; // `http://ipAddressOfThisServer:port/chatroom`;
 
 // Defines socket = to a new websocket
 const socket = io(ROOT_URL);
@@ -92,13 +94,15 @@ function createRoom() {
 
 // Function used for when a user generates a chatroom
 function enterRoomCreate() {
+    console.log('Entering room');
+    console.log(username);
+    console.log(roomCode);
     socket.emit('enterRoom', {
         name: username,
         room: roomCode,
         privacy: privacy,
         method: method
     });
-    sessionStorage.setItem('method', 'join');
 };
 
 function joinRoom() {
@@ -154,8 +158,11 @@ function enterRoomJoin() {
     });
 };
 
-window.onload = function () {
+console.log('Setting window.onload');
+window.addEventListener('load', () => {
+    console.log('Page loaded');
     if (window.location.href === CHATROOM_URL) {
+        console.log('Chatroom page loaded');
         document.querySelector('.form-msg').addEventListener('submit', sendMessage);
 
         msgInput.addEventListener('keypress', () => {
@@ -170,16 +177,19 @@ window.onload = function () {
 
         switch (method) {
             case 'create':
+                console.log('Create method');
                 enterRoomCreate();
                 break;
             case 'join':
+                console.log('Join method');
                 enterRoomJoin();
                 break;
             default:
                 console.log('Error: No method given');
         };
     };
-};
+});
+console.log('Setting window.onload done');
 
 // Function used for when a user leaves a chatroom
 function leaveRoom() {
@@ -205,10 +215,10 @@ socket.on('message', (data) => {
                 ? 'post__header--user'
                 : 'post__header--reply'
                 }">
-                <span class="post__header--name">${name}</span>
-                <span class="post__header--time">${time}</span>
-                </div>
-                <div class="post__text">${text}</div>`
+                    <span class="post__header--name">${name}</span>
+                    <span class="post__header--time">${time}</span>
+                    </div>
+                    <div class="post__text">${text}</div>`
         } else {
             li.innerHTML = `<div class ="post__text">${text}</div>`
         };
@@ -252,7 +262,7 @@ socket.on('joinedRoomFull', () => {
 });
 
 socket.on('joinedRoomNotFound', () => {
-    alert('The room you tried to join does not exist. You might have reloaded the page while no one else was in the room which deleted the room. You will now be taken back to the lobby.');
+    alert('The room you tried to join does not exist.');
     window.location.href = LOBBY_URL;
 });
 
@@ -271,7 +281,7 @@ document.getElementById('ready-checkbox').addEventListener('change', function (e
     if (e.target.checked) {
         console.log('Ready checkbox checked. Emitting player ready event.');
         socket.emit('player ready', roomCode);
-    }
+    };
 });
 
 socket.on('all players ready', function () {
@@ -279,17 +289,25 @@ socket.on('all players ready', function () {
     document.getElementById('start-game-button').disabled = false;
 });
 
+// For testing purposes
+document.getElementById('test-start-game-button').addEventListener('click', function () {
+    socket.emit('test start game', roomCode);
+});
+
 socket.on('game started', function () {
-    document.getElementById('ready-checkbox').style.display = 'none';
+    document.getElementById('ready-checkbox').disabled = true;
 
     // Disable the start game button
     const startGameButton = document.getElementById('start-game-button');
+    const stepGameButton = document.getElementById('step-game-button');
     if (startGameButton) {
         startGameButton.disabled = true;
+        stepGameButton.disabled = false;
     };
 });
 
-function startGameClient(room) {
+function startGameClient() {
+    const room = sessionStorage.getItem('roomCode');
     // Disable the start game button
     const startGameButton = document.getElementById('start-game-button');
     if (startGameButton) {
@@ -297,15 +315,20 @@ function startGameClient(room) {
     };
 
     socket.emit('gameStart', room, function (error, response) {
+        console.log('does this even run?');
         if (error) {
             console.error(`Error: ${error}`);
         } else {
             console.log('Game started');
         };
     });
+    for (let i = 0; i < 7; i++) {
+        stepGameClient();
+    };
 };
 
-function stepGameClient(room) { // pass the room as a parameter
+function stepGameClient() { // pass the room as a parameter
+    const room = sessionStorage.getItem('roomCode');
     // Check that the socket is connected
     console.log(`Socket connected: ${socket.connected}`);
     socket.emit('step-game', room, function (error, response) {
@@ -366,8 +389,8 @@ socket.on('step-game-success', (data, gameData) => {
                 ctx.font = '40px Arial';
                 ctx.fillText(`Player 1 Hp Stack ${gameData.game.players[0].hp.length}`, 100, 100);
                 ctx.fillText(`Player 2 Hp Stack ${gameData.game.players[1].hp.length}`, 100, 200);
-            
-                
+
+
                 ctx.fillText(gameData.game.stage, 20, 50);
                 break;
             case 3: // Build arena
@@ -387,7 +410,7 @@ socket.on('step-game-success', (data, gameData) => {
         switch (gameData.game.phase) {
             case 0: // Top off
                 console.log('case 0 test');
-                
+
                 console.log(gameData.game.players[0].Slammer.side);
                 console.log(gameData.game.players[1].Slammer.side);
                 // while arena is < 8, player pops 1 from hp to arena
@@ -413,21 +436,21 @@ socket.on('step-game-success', (data, gameData) => {
                 let c
                 for (let i = 0; i < gameData.game.players[0].hp.length; i++) {
                     c += 15
-                    ctx.drawImage(blackSide, 100, 100 , 100, 100);
+                    ctx.drawImage(blackSide, 100, 100, 100, 100);
                     console.log('testing for loop 1')
                 }
-                ctx.drawImage(document.getElementById('squirtle'),500,80,100,100)
-                for(let i=0; i<gameData.game.players[0].prize.length; i++){
-                    ctx.drawImage(whiteSide, 200, 100 , 100, 100);
+                ctx.drawImage(document.getElementById('squirtle'), 500, 80, 100, 100)
+                for (let i = 0; i < gameData.game.players[0].prize.length; i++) {
+                    ctx.drawImage(whiteSide, 200, 100, 100, 100);
                 }
                 for (let i = 0; i < gameData.game.players[1].hp.length; i++) {
                     c += 15
-                    ctx.drawImage(blackSide, 100, 200 , 100, 100); 
+                    ctx.drawImage(blackSide, 100, 200, 100, 100);
                     console.log('testing for loop 2')
                 }
-                ctx.drawImage(document.getElementById('bulbasaur'),500,200, 100, 100) 
-                for(let i=0; i<gameData.game.players[1].prize.length; i++){
-                    ctx.drawImage(whiteSide, 200, 200 , 100, 100);
+                ctx.drawImage(document.getElementById('bulbasaur'), 500, 200, 100, 100)
+                for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
+                    ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
                 break;
             case 1:// Knockout
@@ -453,28 +476,28 @@ socket.on('step-game-success', (data, gameData) => {
                 ctx.font = '40px Arial';
                 ctx.fillText(`Player 1 Hp Stack ${gameData.game.players[0].hp.length}`, 100, 100);
                 ctx.fillText(`Player 2 Hp Stack ${gameData.game.players[1].hp.length}`, 100, 200);
-                
+
                 ctx.fillText(gameData.game.stage, 20, 50);
-               
+
                 let y
                 for (let i = 0; i < gameData.game.players[0].hp.length; i++) {
-                    
+
                     y += 15
-                    ctx.drawImage(blackSide, 100, 100  , 100, 100);
+                    ctx.drawImage(blackSide, 100, 100, 100, 100);
                     console.log('testing for loop 1')
                 }
-                ctx.drawImage(document.getElementById('squirtle'),500,80,100,100)
-                for(let i=0; i<gameData.game.players[0].prize.length; i++){
-                    ctx.drawImage(whiteSide, 200, 100 , 100, 100);
+                ctx.drawImage(document.getElementById('squirtle'), 500, 80, 100, 100)
+                for (let i = 0; i < gameData.game.players[0].prize.length; i++) {
+                    ctx.drawImage(whiteSide, 200, 100, 100, 100);
                 }
-                
+
                 for (let i = 0; i < gameData.game.players[1].hp.length; i++) {
-                    ctx.drawImage(blackSide, 100, 200 , 100, 100);
+                    ctx.drawImage(blackSide, 100, 200, 100, 100);
                     console.log('testing for loop 2')
                 }
-                ctx.drawImage(document.getElementById('bulbasaur'),500,200, 100, 100) 
-                for(let i=0; i<gameData.game.players[1].prize.length; i++){
-                    ctx.drawImage(whiteSide, 200, 200 , 100, 100);
+                ctx.drawImage(document.getElementById('bulbasaur'), 500, 200, 100, 100)
+                for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
+                    ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
                 break;
             case 3://Make Attacks
