@@ -36,7 +36,7 @@ var privacy = '';
 var method = '';
 
 // Function used to send a message
-window.sendMessage = function (e) { // sendMessage recieves an event which is represented with the letter e
+function sendMessage(e) { // sendMessage recieves an event which is represented with the letter e
     // Allows you to submit the form without reloading the page
     e.preventDefault();
     socket.emit('message', {
@@ -63,18 +63,18 @@ function generateRoomCode() {
 };
 
 // Function used for pressing the login button
-window.login = function () {
+function login() {
     window.location.href = LOGIN_URL;
 
     // Store the state in sessionStorage
     sessionStorage.setItem('isLoggedIn', 'true');
 };
 
-window.logout = function () {
+function logout() {
     window.location.href = LOGOUT_URL;
 };
 
-window.createRoom = function () {
+function createRoom() {
     if (nameInput.value) {
         username = nameInput.value;
         chatRoom.value = generateRoomCode();
@@ -105,7 +105,7 @@ function enterRoomCreate() {
     });
 };
 
-window.joinRoom = function () {
+function joinRoom() {
     if (nameInput.value && chatRoom.value) {
         username = nameInput.value;
         roomCode = chatRoom.value;
@@ -128,7 +128,7 @@ window.joinRoom = function () {
     } else { alert('Please fill in the room code field.') };
 };
 
-window.enterRoomClicked = function (roomCodeClicked) {
+function enterRoomClicked(roomCodeClicked) {
     if (!nameInput.value) {
         alert('Please fill in the name field.');
         return;
@@ -150,7 +150,7 @@ window.enterRoomClicked = function (roomCodeClicked) {
 };
 
 // Function used for when a user enters a chatroom
-window.enterRoomJoin = function () {
+function enterRoomJoin() {
     socket.emit('enterRoom', {
         name: username,
         room: roomCode,
@@ -192,7 +192,7 @@ window.addEventListener('load', () => {
 console.log('Setting window.onload done');
 
 // Function used for when a user leaves a chatroom
-window.leaveRoom = function () {
+function leaveRoom() {
     socket.emit('leaveRoom');
     socket.on('leaveRoomConfirmation', () => {
     });
@@ -239,7 +239,7 @@ socket.on('activity', (name) => {
     }, 3000);
 });
 
-window.showUsers = function (users) {
+function showUsers(users) {
     usersList.textContent = '';
     if (users) {
         usersList.innerHTML = `<em>Users in ${roomCode}:</em>`;
@@ -262,7 +262,7 @@ socket.on('joinedRoomFull', () => {
 });
 
 socket.on('joinedRoomNotFound', () => {
-    alert('The room you tried to join does not exist. You might have reloaded the page while no one else was in the room which deleted the room. You will now be taken back to the lobby.');
+    alert('The room you tried to join does not exist.');
     window.location.href = LOBBY_URL;
 });
 
@@ -289,17 +289,24 @@ socket.on('all players ready', function () {
     document.getElementById('start-game-button').disabled = false;
 });
 
+// For testing purposes
+document.getElementById('test-start-game-button').addEventListener('click', function () {
+    socket.emit('test start game', roomCode);
+});
+
 socket.on('game started', function () {
     document.getElementById('ready-checkbox').disabled = true;
 
     // Disable the start game button
     const startGameButton = document.getElementById('start-game-button');
+    const stepGameButton = document.getElementById('step-game-button');
     if (startGameButton) {
         startGameButton.disabled = true;
+        stepGameButton.disabled = false;
     };
 });
 
-window.startGameClient = function () {
+function startGameClient() {
     const room = sessionStorage.getItem('roomCode');
     // Disable the start game button
     const startGameButton = document.getElementById('start-game-button');
@@ -308,15 +315,19 @@ window.startGameClient = function () {
     };
 
     socket.emit('gameStart', room, function (error, response) {
+        console.log('does this even run?');
         if (error) {
             console.error(`Error: ${error}`);
         } else {
             console.log('Game started');
         };
     });
+    for (let i = 0; i < 7; i++) {
+        stepGameClient();
+    };
 };
 
-window.stepGameClient = function () { // pass the room as a parameter
+function stepGameClient() { // pass the room as a parameter
     const room = sessionStorage.getItem('roomCode');
     // Check that the socket is connected
     console.log(`Socket connected: ${socket.connected}`);
