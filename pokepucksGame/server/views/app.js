@@ -6,19 +6,22 @@ Editors: Brandon Camacho, Logan Cruz
 <Description>
 Code for the frontend side for the PokePucks game.
 \***************************************************************************/
-// Chatroom Code
-// Gets the ip address of the server
+
+// Define the IP address and port
 const IP_ADDRESS = window.location.hostname;
+const PORT = 3000;
+
 // Define the urls
-const ROOT_URL = `http://${IP_ADDRESS}:3000/`; // `http://ipAddressOfThisServer:port/`;
-const LOGIN_URL = `http://${IP_ADDRESS}:3000/login`; // `http://ipAddressOfThisServer:port/login`;
-const LOGOUT_URL = `http://${IP_ADDRESS}:3000/logout`; // `http://ipAddressOfThisServer:port/logout`;
-const LOBBY_URL = `http://${IP_ADDRESS}:3000/lobby`; // `http://ipAddressOfThisServer:port/lobby`;
-const CHATROOM_URL = `http://${IP_ADDRESS}:3000/chatroom`; // `http://ipAddressOfThisServer:port/chatroom`;
+const ROOT_URL = `http://${IP_ADDRESS}:${PORT}/`; // `http://ipAddressOfThisServer:port/`;
+const LOGIN_URL = `http://${IP_ADDRESS}:${PORT}/login`; // `http://ipAddressOfThisServer:port/login`;
+const LOGOUT_URL = `http://${IP_ADDRESS}:${PORT}/logout`; // `http://ipAddressOfThisServer:port/logout`;
+const LOBBY_URL = `http://${IP_ADDRESS}:${PORT}/lobby`; // `http://ipAddressOfThisServer:port/lobby`;
+const CHATROOM_URL = `http://${IP_ADDRESS}:${PORT}/chatroom`; // `http://ipAddressOfThisServer:port/chatroom`;
 
 // Defines socket = to a new websocket
 const socket = io(ROOT_URL);
 
+// Define the elements
 const msgInput = document.querySelector('#message');
 const nameInput = document.querySelector('#name');
 const chatRoom = document.querySelector('#room');
@@ -26,10 +29,12 @@ const activity = document.querySelector('.activity');
 const usersList = document.querySelector('.user-list');
 const chatDisplay = document.querySelector('.chat-display');
 
+// Define the pages
 const loginPage = document.getElementById('login-page');
 const lobbyPage = document.getElementById('lobby-page');
 const chatroomPage = document.getElementById('chatroom-page');
 
+// Define the variables
 var username = '';
 var roomCode = '';
 var privacy = '';

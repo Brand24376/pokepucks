@@ -20,6 +20,8 @@ npm i -D nodemon (Not required but makes editing this file much more convenient.
 // Start the server for testing by using 'npm run dev' while in the server folder
 // Remember to change the ip address for your formbar instance in the AUTH_URL variable
 */
+
+// Importing the required modules
 import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
@@ -28,39 +30,63 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import os from 'os';
 
+// Function to get the local IP address of the computer the server will be running on
 function getLocalIP() {
+    // Get the network interfaces of the computer
     const interfaces = os.networkInterfaces();
+    // Iterate over the interfaces
     for (const name of Object.keys(interfaces)) {
         for (const iface of interfaces[name]) {
+            // Check if the interface is an IPv4 address and not an internal address
             if (iface.family === 'IPv4' && !iface.internal) {
+                // Return the IPv4 address
                 return iface.address;
             };
         };
     };
+    // If no address is found, return localhost
     return 'localhost';
 };
 
+// Sets IP_ADDRESS to the local IP address of the computer the server will be running on
 const IP_ADDRESS = getLocalIP();
 
-// Define the urls
-const AUTH_URL = `http://172.16.3.162:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
-const THIS_URL = `http://${IP_ADDRESS}:3000/login`; // `http://ipAddressOfThisServer:port/login`;
-const GAME_URL = `http://${IP_ADDRESS}:3000/`; // `http://ipAddressOfThisServer:port/`;
+// Constant for the port the server will run on
+const PORT = process.env.PORT || 3000;
 
+// Constants for the OAuth and redirect URLs
+const AUTH_URL = `http://172.16.3.162:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
+const THIS_URL = `http://${IP_ADDRESS}:${PORT}/login`; // `http://ipAddressOfThisServer:port/login`;
+const GAME_URL = `http://${IP_ADDRESS}:${PORT}/`; // `http://ipAddressOfThisServer:port/`;
+
+// Constants for the file paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = process.env.PORT || 3000;
-const ADMIN = "YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD"; // Make sure this is longer than the maxlength of a username
+/* Constant for admin username. 
+Make sure admin username is longer than maximum possible username length since its used for foramtting the admin messages
+and if a user has the exact same name as the admin username,
+their messages are formatted like if they were an admin.
+ */
+const ADMIN = "YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD";
 
+// Arrays to hold all active rooms
 var allActiveRooms = [];
 var allActivePublicRooms = [];
+
+// Constant for the maximum number of players allowed in a room
+const maxPlayers = 2;
+
+// Map to hold all players that have readied up
 var readyPlayers = new Map();
 
+// Defines app as the express module
 const app = express(); // Our express server is referred to as app
 
+// Sets the view engine to ejs
 app.set('view engine', 'ejs');
 
+// Middleware
 app.use(
     express.json(), // Allows us to parse JSON data
     express.static(path.join(__dirname, "views")), // Defines our static folder so when we get a request to the root domain, it will send eveything to the public directory that will contain the static assets
@@ -70,10 +96,7 @@ app.use(
         saveUninitialized: false
     }));
 
-app.get('/get-ip', (req, res) => {
-    res.json({ ip: IP_ADDRESS });
-});
-
+// This endpoint handles GET requests to the root URL ('/'). 
 app.get('/', (req, res) => {
     // Check if user is already logged in
     if (req.session && req.session.user) {
@@ -85,72 +108,90 @@ app.get('/', (req, res) => {
     };
 });
 
+// This endpoint handles GET requests to the lobby URL ('/lobby'). 
 app.get('/lobby', (req, res) => {
     // Check if user is logged in
     if (req.session && req.session.user) {
         // User is logged in, render the chatroom lobby with the username
         res.render('lobby', { sessionUser: req.session.user, activeRooms: allActivePublicRooms });
     } else {
-        // User is not logged in, redirect to login
+        // User is not logged in, redirect to root
         res.redirect('/');
     };
 });
 
+// This endpoint handles GET requests to the chatroom URL ('/chatroom'). 
 app.get('/chatroom', (req, res) => {
     // Check if user is logged in
     if (req.session && req.session.user) {
+        // User is logged in, render the chatroom
         res.render('chatroom');
     } else {
-        // User is not logged in, redirect to login
+        // User is not logged in, redirect to root
         res.redirect('/');
     };
 });
 
+// This endpoint handles GET requests to the login URL ('/login'). 
 app.get('/login', (req, res) => {
     // Check if user is already logged in
     if (req.session && req.session.user) {
         // User is logged in, redirect to chatroom
         res.redirect('/lobby');
     } else {
+        // User is not logged in, check if token is present in query string
         if (req.query.token) {
-            let tokenData = jwt.decode(req.query.token);
-            req.session.token = tokenData;
-            req.session.user = tokenData.username;
+            // Token is present, decode and store in session
+            let tokenData = jwt.decode(req.query.token); // Decode the token
+            req.session.token = tokenData; // Store the token in the session
+            req.session.user = tokenData.username; // Store the username in the session
+
+            // Redirect to lobby
             res.redirect('/lobby');
         } else {
+            // Token is not present, redirect to OAuth login
             res.redirect(`${AUTH_URL}?redirectURL=${THIS_URL}`);
         };
     };
 });
 
+// This endpoint handles GET requests to the logout URL ('/logout'). 
 app.get('/logout', (req, res) => {
     // Destroy the session and redirect to login
     req.session.destroy((err) => {
+        // Check for errors
         if (err) {
             return console.log(err);
-        }
+        };
+        // Redirect to root
         res.redirect('/');
     });
 });
 
+// Starts the express server on the specified port
+// 'app.listen' function binds and listens for connections on the specified host and port
 const expressServer = app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
 });
 
-// State
+// Object to hold the state of the users
 const UsersState = {
+    // Array to hold all the users
     users: [],
+    // Function to add a user to the users array
     setUsers: function (newUsersArray) {
+        // Set the users array to the new array
         this.users = newUsersArray;
-    }
+    },
 };
 
 // Grabs the server imported from socket.io, gives it the expressServer, and gives it options
 const io = new Server(expressServer, {
+    // cors stands for cross-origin resource sharing
     cors: {
-        // origin allows you to change what is accepted and what is blocked
+        // Origin allows you to change what is accepted and what is blocked
         origin: process.env.NODE_ENV === "production" ? false : ["http://localhost:3000", GAME_URL] // Looks at the node environment. If the node environemnt equals production, origin is set to false because we don't want anyone outside of the domain the server is currently on to access it. If it doesn't equal production, origin is set to the address that we will allow to access our socket.io server
-    }
+    },
 });
 
 // Create a map to hold game instances for each room
@@ -160,55 +201,69 @@ const games = new Map();
 io.on('connection', socket => {
     console.log(`User ${socket.id} connected`);
 
-    // Upon connection - only to user
+    // Upon connection, send a welcome message to the user
     socket.emit('message', buildMsg(ADMIN, "Welcome to Chat App!"));
 
+    // Event handler for 'enterRoom', triggered when a user attempts to enter a room.
+    // The event handler recieves an object containing the user's name, room, privacy, and method of entering the room.
     socket.on('enterRoom', ({ name, room, privacy, method }, callback) => {
         console.log(`${name} is entering room: ${room}`);
-        // leave previous room
+
+        // Get the previous room the user was in
         const prevRoom = getUser(socket.id)?.room;
 
+        // If the user was in a previous room
         if (prevRoom) {
+            // Leave the previous room
             socket.leave(prevRoom);
+            // Emit a message to the previous room that the user has left
             io.to(prevRoom).emit('message', buildMsg(ADMIN, `${name} has left the room`));
         };
 
+        // Activate the user in the new room
         const user = activateUser(socket.id, name, room);
 
-        // cannot update previous room users list until after the state update in activate user
+        // If the user was in a previous room
         if (prevRoom) {
+            // Update the user list for the previous room
             io.to(prevRoom).emit('userList', {
-                users: getUsersInRoom(prevRoom)
+                // Get the users in the previous room
+                users: getUsersInRoom(prevRoom),
             });
         };
 
         // If user is creating a room, user creates and joins the room like normal
         if (method === 'create') {
             console.log('create room start test');
-            // join room
+
+            // Join room
             socket.join(user.room);
 
-            // to user who joined
+            // Emit a message to the user that they have joined the room
             socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`));
 
-            // to everyone else
+            // Emit a message to the room that the user has joined
             socket.broadcast.to(user.room).emit('messsage', buildMsg(ADMIN, `${user.name} has joined the room`));
 
-            // update user list for room
+            // Update user list for room
             io.to(user.room).emit('userList', {
-                users: getUsersInRoom(user.room)
+                // Get the users in the room
+                users: getUsersInRoom(user.room),
             });
 
+            // Add the room to the list of active rooms
             allActiveRooms.push(room);
             allActivePublicRooms.push(room);
 
-            // If a room is private, it removes it from the array
+            // If the room is private
             if (privacy === 'private') {
+                // Remove the room from the public rooms array
                 allActivePublicRooms.splice(allActivePublicRooms.indexOf(room), 1);
             };
 
-            // update rooms list for everyone
+            // Update the rooms list for everyone
             io.emit('roomList', {
+                // Get the list of public rooms
                 rooms: allActivePublicRooms,
             });
 
@@ -217,95 +272,120 @@ io.on('connection', socket => {
             console.log('create room end test');
         };
 
+        // If user is joining a room
         if (method === 'join') {
             console.log('join room start test');
+
+            // Variable to check if the room exists
             let roomExists = false;
 
             // Iterate over all active rooms
             for (let i = 0; i < allActiveRooms.length; i++) {
+                // If the room exists
                 if (allActiveRooms[i] === room) {
                     console.log("Room:", room);
                     console.log('Room Exists');
+
+                    // Set roomExists to true
                     roomExists = true;
                     break;
                 };
             };
 
+            // If the room exists
             if (roomExists) {
                 console.log('Room Exists');
-                if (getUsersInRoom(user.room).length <= 2) {
+
+                // If the room is not full
+                if (getUsersInRoom(user.room).length <= maxPlayers) {
                     // Join the room
                     socket.join(user.room);
 
                     console.log(`# of Users in room after Join: ${getUsersInRoom(user.room).length}`);
 
-                    // Send messages
+                    // Emit a message to the user that they have joined the room
                     socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`));
+                    // Emit a message to the room that the user has joined
                     io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
 
                     // Update user list for room
                     io.to(user.room).emit('userList', {
-                        users: getUsersInRoom(user.room)
+                        // Get the users in the room
+                        users: getUsersInRoom(user.room),
                     });
 
-                    // If a room is private, remove it from the public rooms array
+                    // If a room is private
                     if (privacy === 'private') {
+                        // Remove the room from the public rooms array
                         allActivePublicRooms.splice(allActivePublicRooms.indexOf(room), 1);
                     };
 
                     // Update rooms list for everyone
                     io.emit('roomList', {
+                        // Get the list of public rooms
                         rooms: allActivePublicRooms,
                     });
 
                     if (callback) callback(); // No error
                 } else { // Room is full
-                    socket.emit('joinedRoomFull');
+                    socket.emit('joinedRoomFull'); // Emit an event to the user that the room is full
                     return;
                 };
             } else { // Room does not exist
                 console.log('Room does not exist');
-                socket.emit('joinedRoomNotFound');
+                socket.emit('joinedRoomNotFound'); // Emit an event to the user that the room was not found
                 return;
             };
             console.log('join room end test');
         };
 
         // Server-side game logic
-        let gameStarted = new Map();
+        let gameStarted = new Map(); // Map to hold the game started status for each room
 
-        // Goes through the steps of the games
+        // Goes through the steps of the game
         socket.on('step-game', function (room, callback) {
             console.log('step-game test');
+
+            // Constant for the game instance for the room
             const game = games.get(room);
-            if (game) {
-                try {
+            if (game) { // If a game instance exists for the room
+                try { // Try to step the game
+                    // Step the game
                     game.step();
-                    let gameData = {
+                    let gameData = { // Data to send to the client
+                        // Game instance which holds all the game data for that instance
                         game: game,
                     };
-                    callback(null, { status: 'success' });
+                    callback(null, { status: 'success' }); // No error
+                    // Emit an event to the room that the game was stepped successful
                     io.to(room).emit('step-game-success', { status: 'success' }, gameData);
-                } catch (error) {
+                } catch (error) { // Catch any errors
+                    // Emit an event to the room that the game was stepped unsuccessful
                     callback(error.message);
                 };
-            } else {
+            } else { // If a game instance does not exist for the room
+                // Emit an event to the room that no game was found for the room
                 callback('No game found for this room');
             };
         });
 
+        // Event handler for 'gameStart', triggered when a user starts a game
         socket.on('gameStart', () => {
             // Logic for starting the game
-            if (gameStarted.get(room)) {
+            if (gameStarted.get(room)) { // If the game has already started
+                // Emit an event to the room that the game has already started
                 callback('Game already started');
-            } else {
-                gameStarted.set(room, true);
-                io.to(room).emit('game started');
+            } else { // If the game has not started
+                gameStarted.set(room, true); // Set the game started status to true
+                io.to(room).emit('game started'); // Emit an event to the room that the game has started
                 console.log('gameStart test');
 
+                // Function to compare two objects for equality by converting them to JSON strings.
                 function objectsAreEqual(a, b) {
+                    // Return if the JSON string of the first object is equal to the JSON string of the second object
                     return JSON.stringify(a) === JSON.stringify(b);
                 };
+
                 /**************************************************************
                  * This is the code for the game side of PokePucks. 
                  * The classes create the player, Pucks, slammers, and the game between code lines 328 and 369.
@@ -332,8 +412,10 @@ io.on('connection', socket => {
                  * -Make the game more visually appealing
                  * -Add more features to the game
                  */
+
                 var tempArena = [];
                 var turn;
+
                 class Player {
                     constructor(hp, power, prize, attack, slammer) {
                         this.hp = hp;
@@ -343,6 +425,7 @@ io.on('connection', socket => {
                         this.slammer = slammer;
                     };
                 };
+
                 class Puck {
                     constructor(name, weight, side) {
                         this.name = name;
@@ -359,7 +442,6 @@ io.on('connection', socket => {
                         return power;
                     };
                 };
-
 
                 // Initialize the game 
                 const Pucks = [
@@ -983,6 +1065,7 @@ io.on('connection', socket => {
                         return att;
                     };
                 };
+
                 class Game {
                     constructor() {
                         this.players = [new Player([], [], [], 0, 'squirtle'), new Player([], [], [], 0, 'bulbasaur')];
@@ -1391,9 +1474,9 @@ io.on('connection', socket => {
                                     console.log('Arena:', this.arena);
                                     this.phase++;
                                     break;
-                               
+
                                 };
-                                
+
                                 if (this.phase >= 5 && this.stage == 'loop') {
                                     console.log('case 5 test258')
                                     this.stage = 'loop';
@@ -1419,18 +1502,25 @@ io.on('connection', socket => {
                     };
                 };
 
+                // Constant for a new game instance
                 const game = new Game();
 
+                // Function to start the game
                 function startGame(callback) {
+                    // Constant for the game instance for the room
                     const game = games.get(room);
+                    // If there is a game instance for the room
                     if (game) {
-                        try {
+                        try { // Try to run the game step function
+                            // Run the game step function
                             game.step();
-                            callback(null, { status: 'success' });
-                        } catch (error) {
+                            callback(null, { status: 'success' }); // Return success
+                        } catch (error) { // If there is an error
+                            // Return the error
                             callback(error.message);
                         };
-                    } else {
+                    } else { // If there is no game instance for the room
+                        // Return that there is no game for the room
                         callback('No game found for this room');
                     };
                     console.log('Game:', game);
@@ -1438,13 +1528,16 @@ io.on('connection', socket => {
 
                 // You need to pass a callback function when you call startGame
                 startGame(function (error, result) {
-                    if (error) {
+                    if (error) { // If there is an error
+                        // Log the error
                         console.error(error);
-                    } else {
+                    } else { // If there is no error
+                        // Log the result
                         console.log(result);
                     }
                 });
 
+                // Sets the game instance for the room to the games map
                 games.set(user.room, game);
                 console.log('Games Map:', games);
                 console.log('gameEnd test');
@@ -1452,27 +1545,32 @@ io.on('connection', socket => {
         });
     });
 
+    // When player is ready
     socket.on('player ready', function (room, callback) {
+        // If the room is not in the readyPlayers map
         if (!readyPlayers.has(room)) {
+            // Set the room in the readyPlayers map to an empty array
             readyPlayers.set(room, []);
         };
 
+        // Push the player's id to the room in the readyPlayers map
         readyPlayers.get(room).push(socket.id);
 
         console.log(readyPlayers.get(room));
         console.log(readyPlayers);
         console.log(`Player ${socket.id} is ready in room ${room}. Total ready players: ${readyPlayers.get(room).length}`);
 
-        let roomSize = getUsersInRoom(room).length;
-        if (roomSize >= 2 && readyPlayers.get(room).length === roomSize) {
+        let roomSize = getUsersInRoom(room).length; // Get the number of users in the room
+        if (roomSize >= 2 && readyPlayers.get(room).length === roomSize) { // If there are at least 2 users in the room and all users are ready
             console.log(`All players are ready in room ${room}. Starting game.`);
-            io.to(room).emit('all players ready');
-        } else if (roomSize < 2) {
-            console.log(`Not enough players in room ${room}. Waiting for more players.`);
+            io.to(room).emit('all players ready'); // Emit all players ready to the room
+        } else if (roomSize < 2) { // If there are less than 2 users in the room
+            console.log(`Not enough players in room ${room}. Waiting for more players.`); // Log that there are not enough players
         };
     });
 
-    // For testing purposes
+    // For testing purposes, makes all players ready even if there aren't enough players which allows you to start the game
+    // Delete this when there is no longer a need for testing
     socket.on('test start game', function (room, callback) {
         console.log(`Test start game in room ${room}.`);
         io.to(room).emit('all players ready');
@@ -1481,17 +1579,29 @@ io.on('connection', socket => {
     // When user leaves a room - to all others
     socket.on('leaveRoom', () => {
         console.log('leaveRoom test');
-        const user = getUser(socket.id);
-        userLeavesApp(socket.id);
+
+        const user = getUser(socket.id); // Get the user
+        userLeavesApp(socket.id); // Remove the user from the users array
+
+        // Remove the user from the readyPlayers map
         readyPlayers.forEach((value, key) => {
+            // Filter out the user's id from the room
             readyPlayers.set(key, value.filter(id => id !== socket.id));
         });
+
+        // If the user exists
         if (user) {
             console.log(`# of Users in room after Leave: ${getUsersInRoom(user.room).length}`);
+
+            // Leave the room
             socket.leave(user.room);
+
+            // If there are no users in the room
             if (getUsersInRoom(user.room).length === 0) {
+                // Delete the room
                 games.delete(user.room);
                 console.log('room gone');
+
                 // Loops through the allActiveRooms array
                 for (let i = 0; i < allActiveRooms.length; i++) {
                     // If the room value of user is equal to any of the array items
@@ -1500,6 +1610,7 @@ io.on('connection', socket => {
                         allActiveRooms.splice(allActiveRooms.indexOf(user.room), 1);
                     };
                 };
+
                 // Loops through the allActivePublicRooms array
                 for (let i = 0; i < allActivePublicRooms.length; i++) {
                     // If the room value of user is equal to any of the array items
@@ -1510,16 +1621,22 @@ io.on('connection', socket => {
                 };
             };
 
+            // Emit leave room confirmation
             socket.emit('leaveRoomConfirmation');
 
+            // Emit message to the room that the user has left
             io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));
 
+            // Emit updated user list to the room
             io.to(user.room).emit('userList', {
-                users: getUsersInRoom(user.room)
+                // Get the users in the room
+                users: getUsersInRoom(user.room),
             });
 
+            // Emit updated room list to all users
             io.emit('roomList', {
-                rooms: allActivePublicRooms
+                // Get all active public rooms
+                rooms: allActivePublicRooms,
             });
         };
 
@@ -1529,16 +1646,26 @@ io.on('connection', socket => {
     // When user disconnects - to all others
     socket.on('disconnect', () => {
         console.log('disconnect test');
-        const user = getUser(socket.id);
-        userLeavesApp(socket.id);
+
+        const user = getUser(socket.id); // Get the user
+        userLeavesApp(socket.id); // Remove the user from the users array
+
+        // Remove the user from the readyPlayers map
         readyPlayers.forEach((value, key) => {
+            // Filter out the user's id from the room
             readyPlayers.set(key, value.filter(id => id !== socket.id));
         });
+
+        // If the user exists
         if (user) {
             console.log(`# of Users in room after Disconnect: ${getUsersInRoom(user.room).length}`);
+
+            //If there are no users in the room
             if (getUsersInRoom(user.room).length === 0) {
+                // Delete the room
                 games.delete(user.room);
                 console.log('room gone');
+
                 // Loops through the allActiveRooms array
                 for (let i = 0; i < allActiveRooms.length; i++) {
                     // If the room value of user is equal to any of the array items
@@ -1547,6 +1674,7 @@ io.on('connection', socket => {
                         allActiveRooms.splice(allActiveRooms.indexOf(user.room), 1);
                     };
                 };
+
                 // Loops through the allActivePublicRooms array
                 for (let i = 0; i < allActivePublicRooms.length; i++) {
                     // If the room value of user is equal to any of the array items
@@ -1556,14 +1684,20 @@ io.on('connection', socket => {
                     };
                 };
             };
+
+            // Emit message to the room that the user has left
             io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));
 
+            // Emit updated user list to the room
             io.to(user.room).emit('userList', {
+                // Get the users in the room
                 users: getUsersInRoom(user.room)
             });
 
+            // Emit updated room list to all users
             io.emit('roomList', {
-                rooms: allActivePublicRooms
+                // Get all active public rooms
+                rooms: allActivePublicRooms,
             });
         };
 
@@ -1572,54 +1706,73 @@ io.on('connection', socket => {
 
     // Listening for a message event
     socket.on('message', ({ name, text }) => {
+        // Get the user's room
         const room = getUser(socket.id)?.room;
+
+        // If the room exists
         if (room) {
+            // Emit the message to the room
             io.to(room).emit('message', buildMsg(name, text, socket.id));
         };
     });
 
     // Listen for activity
     socket.on('activity', (name) => {
+        // Get the user's room
         const room = getUser(socket.id)?.room;
+
+        // If the room exists
         if (room) {
+            // Emit the activity to the room
             socket.broadcast.to(room).emit('activity', name);
         };
     });
 });
 
+// Function used to build a message
 function buildMsg(name, text, id) {
+    // Return the message data
     return {
         name,
         text,
         id,
-        time: new Intl.DateTimeFormat('default', {
+        time: new Intl.DateTimeFormat('default', { // Get the current time
             hour: 'numeric',
             minute: 'numeric',
             second: 'numeric'
-        }).format(new Date())
+        }).format(new Date()), // Format the time
     };
 };
 
-// User functions
+// Function to activate a user
 function activateUser(id, name, room) {
+    // Create a user object
     const user = { id, name, room };
+
+    // Add the user to the users array
     UsersState.setUsers([
-        ...UsersState.users.filter(user => user.id !== id),
-        user
+        ...UsersState.users.filter(user => user.id !== id), // Filter out the user
+        user, // Add the user
     ]);
     return user;
 };
 
+// Function to deactivate a user
 function userLeavesApp(id) {
+    // Remove the user from the users array
     UsersState.setUsers(
-        UsersState.users.filter(user => user.id !== id)
+        UsersState.users.filter(user => user.id !== id) // Filter out the user
     );
 };
 
+// Function to get a user
 function getUser(id) {
+    // Return the user
     return UsersState.users.find(user => user.id === id);
 };
 
+// Function to get users in a room
 function getUsersInRoom(room) {
+    // Return the users in the room
     return UsersState.users.filter(user => user.room === room);
 };
