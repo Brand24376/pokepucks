@@ -2,7 +2,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Logan Cruz
+Editors: Brandon Camacho, Logan Cruz, Antonio Cruz
 
 <Description>
 The ejs file for the chatroom.
@@ -25,18 +25,20 @@ The ejs file for the chatroom.
 
 <body>
     <main>
+        <div class="user">
+            <p class="user-list"></p>
+        </div>
         <div class="welcome">
             <ul class="chat-display"></ul>
         </div>
         <div class="leaveButton" id="chatroom-page">
-
-            <p class="user-list"></p>
 
             <p class="activity"></p>
 
             <form class="form-msg">
                 <input type="text" id="message" placeholder="Your message" required>
                 <button type="submit">Send</button>
+                <button id="test-start-game-button">Test Start Game</button>
             </form>
         </div>
         <div class="greyBox" id="game-page">
@@ -62,8 +64,6 @@ The ejs file for the chatroom.
             <button onclick="leaveRoom()">Leave Room</button>
             <button id="step-game-button" disabled="true" onclick="stepGameClient()">Step Game</button>
             <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game</button>
-            <button id="test-start-game-button">Test Start Game</button>
-
             <label for="ready-checkbox">I'm ready:</label>
             <input type="checkbox" id="ready-checkbox">
         </div>
