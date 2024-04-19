@@ -1,7 +1,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Logan Cruz
+Editors: Brandon Camacho, Logan Cruz, Sergio Davalos 
 
 <Description>
 Code for the backend server-side for the PokePucks game.
@@ -964,7 +964,15 @@ io.on('connection', socket => {
                             }]
                         }
                     },
-                ];
+
+                ].map((puck, index) => {
+                    return {
+                        ...puck,
+                        id: index
+                    };
+                });
+
+             
 
                 class Slammer {
                     constructor(name, weight, side) {
@@ -1391,9 +1399,9 @@ io.on('connection', socket => {
                                     console.log('Arena:', this.arena);
                                     this.phase++;
                                     break;
-                               
+
                                 };
-                                
+
                                 if (this.phase >= 5 && this.stage == 'loop') {
                                     console.log('case 5 test258')
                                     this.stage = 'loop';

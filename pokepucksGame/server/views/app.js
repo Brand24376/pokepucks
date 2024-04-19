@@ -1,7 +1,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Logan Cruz
+Editors: Brandon Camacho, Logan Cruz, Sergio Davalos 
 
 <Description>
 Code for the frontend side for the PokePucks game.
@@ -452,6 +452,31 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
+
+                //testing--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                let logY = 300; // Y position for the log messages on the canvas
+                let collectedPogs = document.getElementById('CollectedPogs');
+
+                ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
+                console.log('Testing for loop 3');
+                console.log(gameData.game.arena.length);
+                for (let i = 0; i < gameData.game.arena.length; i++) {
+                    let pog = gameData.game.arena[i];
+                    collectedPogs.value += "Pog Taken: " + pog.name + '\n';
+
+                    // Display the pog on the canvas
+                    let pogImage = document.getElementById(pog.imageId); // Replace 'pog.imageId' with the actual property that holds the image id
+                    ctx.drawImage(pogImage, 200 + i * 110, 100, 100, 100); // Draw the pog image at a new position for each pog
+
+                    // Display the message on the canvas
+                    let message = 'Pog taken: ' + pog.name;
+                    ctx.font = '20px Arial';
+                    ctx.fillStyle = 'black';
+                    ctx.fillText(message, 10, logY);
+                    logY += 20; // Move the Y position down for the next message
+                }
+                //--------------------------------------------------------------------------------------------------------------------------------------------------------------
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
@@ -499,7 +524,12 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
+
+
+
                 break;
+
+
             case 3://Make Attacks
                 console.log('case 3 test');
                 console.log(gameData.game.players[0].Slammer.side);
