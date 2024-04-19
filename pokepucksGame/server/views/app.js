@@ -6,19 +6,22 @@ Editors: Brandon Camacho, Logan Cruz
 <Description>
 Code for the frontend side for the PokePucks game.
 \***************************************************************************/
-// Chatroom Code
-// Gets the ip address of the server
+
+// Define the IP address and port
 const IP_ADDRESS = window.location.hostname;
+const PORT = 3000;
+
 // Define the urls
-const ROOT_URL = `http://${IP_ADDRESS}:3000/`; // `http://ipAddressOfThisServer:port/`;
-const LOGIN_URL = `http://${IP_ADDRESS}:3000/login`; // `http://ipAddressOfThisServer:port/login`;
-const LOGOUT_URL = `http://${IP_ADDRESS}:3000/logout`; // `http://ipAddressOfThisServer:port/logout`;
-const LOBBY_URL = `http://${IP_ADDRESS}:3000/lobby`; // `http://ipAddressOfThisServer:port/lobby`;
-const CHATROOM_URL = `http://${IP_ADDRESS}:3000/chatroom`; // `http://ipAddressOfThisServer:port/chatroom`;
+const ROOT_URL = `http://${IP_ADDRESS}:${PORT}/`; // `http://ipAddressOfThisServer:port/`;
+const LOGIN_URL = `http://${IP_ADDRESS}:${PORT}/login`; // `http://ipAddressOfThisServer:port/login`;
+const LOGOUT_URL = `http://${IP_ADDRESS}:${PORT}/logout`; // `http://ipAddressOfThisServer:port/logout`;
+const LOBBY_URL = `http://${IP_ADDRESS}:${PORT}/lobby`; // `http://ipAddressOfThisServer:port/lobby`;
+const CHATROOM_URL = `http://${IP_ADDRESS}:${PORT}/chatroom`; // `http://ipAddressOfThisServer:port/chatroom`;
 
 // Defines socket = to a new websocket
 const socket = io(ROOT_URL);
 
+// Define the elements
 const msgInput = document.querySelector('#message');
 const nameInput = document.querySelector('#name');
 const chatRoom = document.querySelector('#room');
@@ -26,10 +29,12 @@ const activity = document.querySelector('.activity');
 const usersList = document.querySelector('.user-list');
 const chatDisplay = document.querySelector('.chat-display');
 
+// Define the pages
 const loginPage = document.getElementById('login-page');
 const lobbyPage = document.getElementById('lobby-page');
 const chatroomPage = document.getElementById('chatroom-page');
 
+// Define the variables
 var username = '';
 var roomCode = '';
 var privacy = '';
@@ -39,9 +44,11 @@ var method = '';
 function sendMessage(e) { // sendMessage recieves an event which is represented with the letter e
     // Allows you to submit the form without reloading the page
     e.preventDefault();
+    
+    // Emit the message event
     socket.emit('message', {
-        name: username,
-        text: msgInput.value,
+        name: username, // The name of the user
+        text: msgInput.value, // The text of the message
     });
     // Replace the msgInput with nothing
     msgInput.value = "";
@@ -52,35 +59,42 @@ function sendMessage(e) { // sendMessage recieves an event which is represented 
 // Generates room code used to enter a chatroom
 function generateRoomCode() {
     let roomCode = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; // Define the characters that can be used in the roomCode
+    const charactersLength = characters.length; // Define the length of the characters variable
     let counter = 0;
-    while (counter < 5) {
+    while (counter < 5) { // While the counter is less than 5
+        // Add a random character from the characters variable to the roomCode
         roomCode += characters.charAt(Math.floor(Math.random() * charactersLength));
-        counter++;
+        counter++; // Increment the counter
     };
+    // Return the roomCode
     return roomCode;
 };
 
 // Function used for pressing the login button
 function login() {
+    // Redirect to the login page
     window.location.href = LOGIN_URL;
 
     // Store the state in sessionStorage
     sessionStorage.setItem('isLoggedIn', 'true');
 };
 
+// Function used for pressing the logout button
 function logout() {
+    // Redirect to the logout page
     window.location.href = LOGOUT_URL;
 };
 
+// Function used for pressing the create room button
 function createRoom() {
+    // Check if the nameInput has a value
     if (nameInput.value) {
-        username = nameInput.value;
-        chatRoom.value = generateRoomCode();
-        roomCode = chatRoom.value;
-        privacy = document.getElementById('privacy').value;
-        method = 'create';
+        username = nameInput.value; // Set the username to the value of the nameInput
+        chatRoom.value = generateRoomCode(); // Set the chatRoom value to the generated room code
+        roomCode = chatRoom.value; // Set the roomCode to the chatRoom value
+        privacy = document.getElementById('privacy').value; // Set the privacy to the value of the privacy dropdown
+        method = 'create'; // Set the method to create
 
         // Store the values in sessionStorage
         sessionStorage.setItem('username', username);
@@ -88,6 +102,7 @@ function createRoom() {
         sessionStorage.setItem('privacy', privacy);
         sessionStorage.setItem('method', method);
 
+        // Redirect to the chatroom page
         window.location.href = CHATROOM_URL;
     };
 };
@@ -97,6 +112,8 @@ function enterRoomCreate() {
     console.log('Entering room');
     console.log(username);
     console.log(roomCode);
+
+    // Emit 'enterRoom' event and wait for server response
     socket.emit('enterRoom', {
         name: username,
         room: roomCode,
@@ -105,11 +122,13 @@ function enterRoomCreate() {
     });
 };
 
+// Function used for pressing the join room button
 function joinRoom() {
+    // Check if the nameInput and chatRoom have values
     if (nameInput.value && chatRoom.value) {
-        username = nameInput.value;
-        roomCode = chatRoom.value;
-        method = 'join';
+        username = nameInput.value; // Set the username to the value of the nameInput
+        roomCode = chatRoom.value; // Set the roomCode to the value of the chatRoom
+        method = 'join'; // Set the method to join
 
         // Store the values in sessionStorage
         sessionStorage.setItem('username', username);
@@ -118,39 +137,45 @@ function joinRoom() {
 
         // Emit 'enterRoom' event and wait for server response
         socket.emit('enterRoom', { name: username, room: roomCode, method: method }, (error) => {
-            if (error) {
-                alert(error);
-            } else {
-                // Only navigate to the chatroom page if there is no error
+            if (error) { // If there is an error
+                alert(error); // Alert the error
+            } else { // If there is no error
+                // Redirect to the chatroom page
                 window.location.href = CHATROOM_URL;
             };
         });
-    } else { alert('Please fill in the room code field.') };
+    } else { alert('Please fill in the room code field.') }; // Alert the user to fill in the room code field
 };
 
+// Function used for pressing the enter room button
 function enterRoomClicked(roomCodeClicked) {
+    // Check if the nameInput has a value
     if (!nameInput.value) {
+        // Alert the user to fill in the name field
         alert('Please fill in the name field.');
         return;
     };
 
+    // Set the values of the fields
     document.getElementById('room').value = roomCodeClicked || '';
     document.getElementById('join').click();
 
-    username = nameInput.value;
-    roomCode = roomCodeClicked;
-    method = 'join';
+    username = nameInput.value; // Set the username to the value of the nameInput
+    roomCode = roomCodeClicked; // Set the roomCode to the value of the roomCodeClicked
+    method = 'join'; // Set the method to join
 
     // Store the values in sessionStorage
     sessionStorage.setItem('username', username);
     sessionStorage.setItem('roomCode', roomCode);
     sessionStorage.setItem('method', method);
 
+    // Redirect to the chatroom page
     window.location.href = CHATROOM_URL;
 };
 
 // Function used for when a user enters a chatroom
 function enterRoomJoin() {
+    // Emit 'enterRoom' event and wait for server response
     socket.emit('enterRoom', {
         name: username,
         room: roomCode,
@@ -159,8 +184,10 @@ function enterRoomJoin() {
 };
 
 console.log('Setting window.onload');
+// When the window loads
 window.addEventListener('load', () => {
     console.log('Page loaded');
+    // Check if the page is the login page
     if (window.location.href === CHATROOM_URL) {
         console.log('Chatroom page loaded');
         document.querySelector('.form-msg').addEventListener('submit', sendMessage);

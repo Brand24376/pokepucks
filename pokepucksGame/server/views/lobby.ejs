@@ -58,6 +58,7 @@ The ejs file for the chatroom.
 
         <p class="active"> Active Rooms</p>
 
+        <!-- This div shows all active rooms with the data from the server -->
         <div class="rooms" id="lobby-page">
             <% activeRooms.forEach(function(room, index) { %>
                 <span class="room-code" onclick="enterRoomClicked('<%= room %>')">
@@ -98,7 +99,6 @@ The ejs file for the chatroom.
 
     changeBg();
     setInterval(changeBg, 2820) // Every 1000 equals 1 second
-
 </script>
 
 </html>
