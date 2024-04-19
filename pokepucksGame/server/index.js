@@ -1391,8 +1391,11 @@ io.on('connection', socket => {
                                     console.log('Arena:', this.arena);
                                     this.phase++;
                                     break;
+                               
                                 };
-                                if (this.phase > 5 && this.stage == 'loop') {
+                                
+                                if (this.phase >= 5 && this.stage == 'loop') {
+                                    console.log('case 5 test258')
                                     this.stage = 'loop';
                                     this.phase = 0;
                                 };
