@@ -2,7 +2,6 @@
 Project: PokePucks
 Author: Brandon Camacho
 Editors: Brandon Camacho, Antonio Cruz
-{ 172.16.3.124:3000 }
 <Description>
 The css for the chatroom.
 \***************************************************************************/
@@ -26,9 +25,9 @@ section{
 }
 
 button{
-    background-color: yellow;
     width: 200px;
-    height: 60px
+    height: 60px;
+    background-color: yellow;
 }
 
 .title{
@@ -118,13 +117,13 @@ body{
 }
 
 canvas{
+    height: 450px;
+    width: 1400px;
     margin-left: 250px;
-    height: 500px;
-    width: 1400px
 }
 
 .strste{
-    margin-left: 500px;
+    margin-left: 550px;
 }
 
 main {
@@ -163,8 +162,20 @@ button {
     border-radius: 10px;
 }
 
+.open-title{
+    color: black;
+    font-size: 150px;
+    margin-top: 50px;
+    border-width: 25px;
+    margin-left: 640px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
 #login-page {
-    visibility: visible;
+    width: 1000px;
+    margin-top: 200px;
+    margin-left: 450px;
+    text-align: center;
 }
 
 #lobby-page {
@@ -176,13 +187,14 @@ button {
 }
 
 .grayBox{
-    margin-left: 0px;
+    overflow: hidden;
 }
 
 .welcome {
     padding: 0;
     width: 500px;
     flex-grow: 1;
+    height: 200px;
     display: flex;
     overflow: auto;
     max-width: 600px;
@@ -195,12 +207,12 @@ button {
 }
 
 .post {
-    background-color: #eee;
+    margin: .5rem;
+    flex-shrink: 0;
+    overflow: hidden;
     border-radius: 10px;
     padding: 0 0 .25rem;
-    margin: .5rem;
-    overflow: hidden;
-    flex-shrink: 0;
+    background-color: #eee;
 }
 
 .post--left {
@@ -214,12 +226,12 @@ button {
 }
 
 .post__header {
-    color: #fff;
-    padding: .25rem .5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: .5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: .25rem .5rem;
+    justify-content: space-between;
 }
 
 .post__header--user {
@@ -239,20 +251,21 @@ button {
 }
 
 .post__text {
-    text-align: center;
-    margin-top: 5px;
     color: #333;
+    margin-top: 5px;
+    text-align: center;
     padding: .25rem .5rem;
 }
 
 .user-list,
 .room-list,
 .activity {
-    color: white;
     width: 100%;
-    min-height: 2.65rem;
-    margin-left: 850px;
+    height: 20px;
+    color: white;
     max-width: 600px;
+    margin-left: 850px;
+    margin-bottom: 20px;
     padding: .75rem .25rem;
 }
 
@@ -271,23 +284,25 @@ label[for="ready-checkbox"] {
 
 /* Game CSS */
 .blackSide {
-    image-rendering: auto;
-    visibility: hidden;
-    max-height: 0%;
     max-width: 0%;
+    max-height: 0%;
+    visibility: hidden;
+    image-rendering: auto;
 }
 .pokemon {
-    image-rendering: auto;
-    visibility: hidden;
-    max-height: 0%;
     max-width: 0%;
+    max-height: 0%;
+    visibility: hidden;
+    image-rendering: auto;
 }
 
 #canvas {
-    position: relative;
     top: 0;
     left: 0;
     z-index: 1;
+
+    position: relative;
+
 }
 
 #CollectedPogs {
@@ -308,4 +323,5 @@ label[for="ready-checkbox"] {
     background-color: rgba(255, 255, 255, 50%);
     border-color: black; 
     
+
 }
