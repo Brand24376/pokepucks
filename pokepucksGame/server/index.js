@@ -1245,12 +1245,7 @@ io.on('connection', socket => {
                                  * The phase is increased by 1.
                                 */
 
-                                if (this.arena === undefined && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
-                                    this.arena = [];
-                                    for (let i = 0; i < Math.floor(Math.random() * 8) + 1; i++) {
-                                        this.arena.push(new Puck('pog', 1, 'down'));
-                                    }
-                                }
+                                
 
                                 console.log('case 1 test');
                                 console.log(this.players[0].Slammer.side);
@@ -1442,6 +1437,7 @@ io.on('connection', socket => {
                                 } else {
                                     this.turn = 0;
                                 };
+                            
                                 this.phase++;
                                 break;
                             case 5://Check for winner
@@ -1454,15 +1450,9 @@ io.on('connection', socket => {
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
 
-                                if (this.arena === undefined && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
+                                
 
-                                    if (this.arena.length == 0 && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
-
-                                        let num = Math.floor(Math.random() * 8); + 1;
-                                        for (let i = 0; i < num; i++) {
-                                            this.arena.push(new Puck('pog', 1, 'down'));
-                                        }
-                                    }
+                                    
 
                                     //If player is the only player remaining with either hp or non flipped slammer, they win.
                                     if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
@@ -1473,26 +1463,22 @@ io.on('connection', socket => {
                                         this.stage = 'end';
                                         console.log('player 1 wins');
                                     };
-                                    if (this.arena.length == 0 && this.players[0].hp.length > 0 && this.players[1].hp.length > 0) {
-                                        let num = Math.floor(Math.random() * 8); + 1;
-                                        for (let i = 0; i < num; i++) {
-                                            this.arena.push(new Puck('pog', 1, 'down'));
-                                        }
-                                    }
+                                   
                                     console.log('Arena:', this.arena);
                                     this.phase++;
+                                    if (this.phase >= 5 && this.stage == 'loop') {
+                                        console.log('case 5 test258')
+                                        this.stage = 'loop';
+                                        this.phase = 0;
+                                    };
+                                    if (this.stage == 'end') {
+                                        this.phase = 0;
+                                    };
                                     break;
 
-                                };
+                                
 
-                                if (this.phase >= 5 && this.stage == 'loop') {
-                                    console.log('case 5 test258')
-                                    this.stage = 'loop';
-                                    this.phase = 0;
-                                };
-                                if (this.stage == 'end') {
-                                    this.phase = 0;
-                                };
+                               
                         };
                     };
                     stage_end() {
