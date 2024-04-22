@@ -46,6 +46,7 @@ The ejs file for the chatroom.
             <img src="img/bulbasaur.svg" id="bulbasaur" class="pokemon" height="100" width="100" />
             <img src="img/squirtle.svg" id="squirtle" class="pokemon" height="100" width="100" />
             <img src="img/whiteSide.png" alt="" class="blackSide" id="whiteSide">
+        
             <!--
 
             
@@ -67,14 +68,20 @@ The ejs file for the chatroom.
             <label for="ready-checkbox">I'm ready:</label>
             <input type="checkbox" id="ready-checkbox">
         </div>
+        // testing -----------------------------
+        <textarea id="CollectedPogs" rows="3" cols="5" style="overflow:auto;" readonly> Collected Pogs: </textarea>
 
-        <div class="music"><button onclick="play()">music</button></div>
+    // -------------------------------------
+
+        <div class="music"><button onclick="play()">music</button></div> 
         <script>
             function play() {
                 var audio = new Audio('music/intro.mp3')
                 audio.play()
             }
         </script>
+
+        
     </main>
 </body>
 
