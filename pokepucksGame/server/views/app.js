@@ -44,7 +44,7 @@ var method = '';
 function sendMessage(e) { // sendMessage recieves an event which is represented with the letter e
     // Allows you to submit the form without reloading the page
     e.preventDefault();
-    
+
     // Emit the message event
     socket.emit('message', {
         name: username, // The name of the user
@@ -316,11 +316,6 @@ socket.on('all players ready', function () {
     document.getElementById('start-game-button').disabled = false;
 });
 
-// For testing purposes
-document.getElementById('test-start-game-button').addEventListener('click', function () {
-    socket.emit('test start game', roomCode);
-});
-
 socket.on('game started', function () {
     document.getElementById('ready-checkbox').disabled = true;
 
@@ -376,6 +371,34 @@ socket.on('step-game-success', (data, gameData) => {
     console.log('Data:', data);
     console.log('custom test success');
     console.log('Game Data:', gameData);
+
+    // Gets the current player
+    let currentPlayer;
+    try { // Try to get the current player
+        currentPlayer = gameData.usersInRoom[gameData.game.turn].name;
+    } catch (error) { // If there is an error
+        console.error('Invalid turn index:', gameData.game.turn);
+
+        // Handle the error appropriately, e.g., by setting currentPlayer to a default value
+        currentPlayer = null;
+    };
+    console.log('Current Player:', currentPlayer);
+
+    // Function to update the step game button based on the current game turn
+    function updateStepGameButton() {
+        // Holds the step game button
+        const stepGameButton = document.getElementById('step-game-button');
+
+        // If the username is the current player
+        if (username === currentPlayer) {
+            stepGameButton.disabled = false; // Enable the step game button
+            stepGameButton.textContent = 'Step Game'; // Change the text of the step game button
+        } else { // If the username is not the current player
+            stepGameButton.disabled = true; // Disable the step game button
+            stepGameButton.textContent = 'Step Game \n (Not Your Turn)'; // Change the text of the step game button
+        };
+    };
+    updateStepGameButton();
 
     function step() {
         switch (gameData.game.stage) {
@@ -479,9 +502,6 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
-
-                //testing--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogs = document.getElementById('CollectedPogs');
 
@@ -494,7 +514,12 @@ socket.on('step-game-success', (data, gameData) => {
 
                     // Display the pog on the canvas
                     let pogImage = document.getElementById(pog.imageId); // Replace 'pog.imageId' with the actual property that holds the image id
+
+                    /*   
+                    This code currently isn't working and is causing errors in the web console when in the game/chatroom page.
+                    Make sure to fix this code when its seen.
                     ctx.drawImage(pogImage, 200 + i * 110, 100, 100, 100); // Draw the pog image at a new position for each pog
+                    */
 
                     // Display the message on the canvas
                     let message = 'Pog taken: ' + pog.name;
@@ -503,7 +528,6 @@ socket.on('step-game-success', (data, gameData) => {
                     ctx.fillText(message, 10, logY);
                     logY += 20; // Move the Y position down for the next message
                 }
-                //--------------------------------------------------------------------------------------------------------------------------------------------------------------
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
@@ -533,7 +557,6 @@ socket.on('step-game-success', (data, gameData) => {
 
                 let y
                 for (let i = 0; i < gameData.game.players[0].hp.length; i++) {
-
                     y += 15
                     ctx.drawImage(blackSide, 100, 100, 100, 100);
                     console.log('testing for loop 1')

@@ -2,6 +2,7 @@
 Project: PokePucks
 Author: Brandon Camacho
 Editors: Brandon Camacho, Antonio Cruz
+
 <Description>
 The css for the chatroom.
 \***************************************************************************/
@@ -13,7 +14,7 @@ The css for the chatroom.
     font-family: Arial, Helvetica, sans-serif;
 }
 
-section{
+section {
     top: 0px;
     left: 0px;
     width: 100%;
@@ -24,13 +25,13 @@ section{
     justify-content: center;
 }
 
-button{
+button {
     width: 200px;
     height: 60px;
     background-color: yellow;
 }
 
-.title{
+.title {
     color: black;
     font-size: 150px;
     margin-top: 50px;
@@ -44,7 +45,7 @@ button{
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
-.username{
+.username {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -54,10 +55,10 @@ button{
     text-align: center;
     border-style: groove;
     border-color: rgb(241, 52, 52);
-    
+
 }
 
-.code{
+.code {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -69,60 +70,60 @@ button{
     border-color: rgb(252, 60, 60);
 }
 
-.text1{
+.text1 {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.pubpriv{
+.pubpriv {
     margin-top: 10px;
     text-align: center;
 }
 
-.active{
+.active {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.rooms{
+.rooms {
     width: 25%;
     margin-top: 15px;
     margin-left: 710px;
     border-style: solid;
 }
 
-.jout{
+.jout {
     border: none;
     padding: 10px;
     margin-top: 15px;
     margin-left: 700px;
 }
 
-.craroo{
+.craroo {
     margin-top: 15px;
     margin-left: 835px;
 }
 
-.music{
+.music {
     margin-top: 15px;
     margin-left: 835px;
 }
 
 /*PastPoint ChatRoom CSS*/
-body{
+body {
     color: black;
     background-image: url("img/ad.png");
 }
 
-canvas{
+canvas {
     height: 450px;
     width: 1400px;
     margin-left: 250px;
 }
 
-.strste{
+.strste {
     margin-left: 550px;
 }
 
@@ -162,7 +163,7 @@ button {
     border-radius: 10px;
 }
 
-.open-title{
+.open-title {
     color: black;
     font-size: 150px;
     margin-top: 50px;
@@ -186,7 +187,7 @@ button {
     visibility: visible;
 }
 
-.grayBox{
+.grayBox {
     overflow: hidden;
 }
 
@@ -289,6 +290,7 @@ label[for="ready-checkbox"] {
     visibility: hidden;
     image-rendering: auto;
 }
+
 .pokemon {
     max-width: 0%;
     max-height: 0%;
@@ -310,7 +312,7 @@ label[for="ready-checkbox"] {
     top: 0;
     right: 100px;
     z-index: 2;
-    
+
     text-align: center;
     color: black;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
@@ -319,9 +321,9 @@ label[for="ready-checkbox"] {
     height: 200px;
     width: 400px;
 
-    background-color: transparent; 
+    background-color: transparent;
     background-color: rgba(255, 255, 255, 50%);
-    border-color: black; 
-    
+    border-color: black;
+
 
 }
