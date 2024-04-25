@@ -502,24 +502,24 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
+
+                __________________________________
+// Sergio testing resolving #101
+
+
+
                 let logY = 300; // Y position for the log messages on the canvas
-                let collectedPogs = document.getElementById('CollectedPogs');
+                let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
+                let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
+
 
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
                 console.log('Testing for loop 3');
                 console.log(gameData.game.arena.length);
                 for (let i = 0; i < gameData.game.arena.length; i++) {
                     let pog = gameData.game.arena[i];
-                    collectedPogs.value += "Pog Taken: " + pog.name + '\n';
 
-                    // Display the pog on the canvas
-                    let pogImage = document.getElementById(pog.imageId); // Replace 'pog.imageId' with the actual property that holds the image id
-
-                    /*   
-                    This code currently isn't working and is causing errors in the web console when in the game/chatroom page.
-                    Make sure to fix this code when its seen.
-                    ctx.drawImage(pogImage, 200 + i * 110, 100, 100, 100); // Draw the pog image at a new position for each pog
-                    */
+                    collectedPogsPlayer1.value += "Pog Taken: " + pog.name + '\n';
 
                     // Display the message on the canvas
                     let message = 'Pog taken: ' + pog.name;
@@ -528,6 +528,47 @@ socket.on('step-game-success', (data, gameData) => {
                     ctx.fillText(message, 10, logY);
                     logY += 20; // Move the Y position down for the next message
                 }
+                // Function to add a pog to a player's inventory
+                function addToInventory(player, pog) {
+                    // Check if the player has an inventory property
+                    if (!player.inventory) {
+                        player.inventory = [];
+                    }
+
+                    // Add the pog to the player's inventory
+                    player.inventory.push(pog);
+                }
+
+                // Function to select a pog
+                function selectPog(player, pogIndex) {
+                    // Remove the pog from the arena
+                    let selectedPog = gameData.game.arena.splice(pogIndex, 1)[0];
+
+                    // Add the pog to the player's inventory
+                    addToInventory(player, selectedPog);
+
+                    // Update the textarea for the player
+                    let collectedPogs = player === player1 ? collectedPogsPlayer1 : collectedPogsPlayer2;
+                    collectedPogs.value += "Pog Taken: " + selectedPog.name + '\n';
+
+                    // Display the selected pog on the canvas
+                    let message = 'Pog taken: ' + selectedPog.name;
+                    ctx.font = '20px Arial';
+                    ctx.fillStyle = 'black';
+                    ctx.fillText(message, 10, logY);
+                    logY += 20; // Move the Y position down for the next message
+                }
+
+                // Use the function to add a pog to a player's inventory
+                // Replace 'player' with the actual player object and 'pog' with the actual pog object
+                // addToInventory(player, pog);
+
+                // Use the function to select a pog for a player
+                // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
+                // selectPog(player, selectedPogIndex);
+                __________________________________
+
+
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
