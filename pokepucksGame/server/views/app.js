@@ -206,10 +206,12 @@ window.addEventListener('load', () => {
             case 'create':
                 console.log('Create method');
                 enterRoomCreate();
+                sessionStorage.setItem('method', 'join');
                 break;
             case 'join':
                 console.log('Join method');
                 enterRoomJoin();
+                sessionStorage.setItem('method', 'join');
                 break;
             default:
                 console.log('Error: No method given');

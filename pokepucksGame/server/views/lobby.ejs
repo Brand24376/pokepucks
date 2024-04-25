@@ -77,7 +77,7 @@ The ejs file for the chatroom.
             <button onclick="createRoom()">Create Room</button>
         </div>
 
-        <div class="music"><button onclick="play()">music</button></div>
+        <div class="music"><button onclick="play()">Music</button></div>
     </main>
 </body>
 <script>
@@ -85,7 +85,7 @@ The ejs file for the chatroom.
         var audio = new Audio('music/intro.mp3')
         audio.play()
     }
-
+    
     let currentIndex = 0;
     const images = ["url(img/ash.png)", "url('img/fhc.png')", "url(img/char.png)", "url('img/fgh.png')", "url('img/jfh.png')", "url('img/gren.png')", "url(img/lucario.png)"]
     const body = document.querySelector('body')
