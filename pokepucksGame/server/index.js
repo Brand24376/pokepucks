@@ -342,33 +342,6 @@ io.on('connection', socket => {
         // Server-side game logic
         let gameStarted = new Map(); // Map to hold the game started status for each room
 
-        // Goes through the steps of the game
-        socket.on('step-game', function (room, callback) {
-            console.log('step-game test');
-
-            // Constant for the game instance for the room
-            const game = games.get(room);
-            if (game) { // If a game instance exists for the room
-                try { // Try to step the game
-                    // Step the game
-                    game.step();
-                    let gameData = { // Data to send to the client
-                        // Game instance which holds all the game data for that instance
-                        game: game,
-                    };
-                    callback(null, { status: 'success' }); // No error
-                    // Emit an event to the room that the game was stepped successful
-                    io.to(room).emit('step-game-success', { status: 'success' }, gameData);
-                } catch (error) { // Catch any errors
-                    // Emit an event to the room that the game was stepped unsuccessful
-                    callback(error.message);
-                };
-            } else { // If a game instance does not exist for the room
-                // Emit an event to the room that no game was found for the room
-                callback('No game found for this room');
-            };
-        });
-
         // Event handler for 'gameStart', triggered when a user starts a game
         socket.on('gameStart', () => {
             // Logic for starting the game
@@ -1054,8 +1027,6 @@ io.on('connection', socket => {
                     };
                 });
 
-             
-
                 class Slammer {
                     constructor(name, weight, side) {
                         this.name = name;
@@ -1239,9 +1210,6 @@ io.on('connection', socket => {
                                  * If a player has no pogs in their stack, move that player's slammer into the center.
                                  * The phase is increased by 1.
                                 */
-
-                                
-
                                 console.log('case 1 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
@@ -1310,7 +1278,6 @@ io.on('connection', socket => {
                                                 break;
                                             };
                                         };
-
                                         console.log('slammerInArena:', slammerInArena);
                                         console.log('this.turn:', this.turn);
                                         if (slammerInArena && this.players[1].hp.length == 0) {
@@ -1338,11 +1305,9 @@ io.on('connection', socket => {
                                                 } else {
                                                     console.log(this.arena[i])
                                                     console.log('Puck is not flipped');
-
                                                 }
                                             }
                                         }
-
                                         this.players[this.turn].attacks--;
                                     };
                                 } else {
@@ -1388,7 +1353,6 @@ io.on('connection', socket => {
                                                 }
                                             }
                                         }
-
                                         this.players[this.turn].attacks--;
                                     };
                                 };
@@ -1428,9 +1392,10 @@ io.on('connection', socket => {
                                     this.turn = 1;
                                 } else {
                                     this.turn = 0;
-                                };
-                                
-                            this.phase++;
+
+
+                                this.phase++;
+
                                 break;
                             case 5://Check for winner
                                 /*********************************
@@ -1441,6 +1406,7 @@ io.on('connection', socket => {
                                 console.log('case 5 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
+
 
                                     
 
@@ -1468,7 +1434,19 @@ io.on('connection', socket => {
 
                                 
 
-                               
+
+
+                                console.log('Arena:', this.arena);
+                                this.phase++;
+                                if (this.phase >= 5 && this.stage == 'loop') {
+                                    console.log('case 5 test258')
+                                    this.stage = 'loop';
+                                    this.phase = 0;
+                                };
+                                if (this.stage == 'end') {
+                                    this.phase = 0;
+                                };
+                                break;
                         };
                     };
                     stage_end() {
@@ -1486,19 +1464,29 @@ io.on('connection', socket => {
                     };
                 };
 
+                // Get the users in the room
+                let usersInRoom = getUsersInRoom(user.room);
+                shuffle(usersInRoom); // Shuffle the array of users
+                assignTurnOrder(usersInRoom); // Assign each user a turn order
+
+                console.log('Users in Room:', usersInRoom);
+
                 // Constant for a new game instance
                 const game = new Game();
 
                 // Function to start the game
-                function startGame(callback) {
+                function startGame(usersInRoom, callback) {
                     // Constant for the game instance for the room
                     const game = games.get(room);
                     // If there is a game instance for the room
                     if (game) {
                         try { // Try to run the game step function
-                            // Run the game step function
-                            game.step();
-                            callback(null, { status: 'success' }); // Return success
+                            game.step(); // Run the game step function
+                            let gameData = { // Data to send to the client
+                                game: game, // Game instance which holds all the game data for that instance
+                                usersInRoom: usersInRoom, // Users in the room
+                            };
+                            callback(null, { status: 'success' }, gameData); // Return success and gameData
                         } catch (error) { // If there is an error
                             // Return the error
                             callback(error.message);
@@ -1511,13 +1499,15 @@ io.on('connection', socket => {
                 };
 
                 // You need to pass a callback function when you call startGame
-                startGame(function (error, result) {
+                startGame(usersInRoom, function (error, result, gameData) {
                     if (error) { // If there is an error
                         // Log the error
                         console.error(error);
                     } else { // If there is no error
                         // Log the result
                         console.log(result);
+                        // Emit an event to the room that the game was stepped successful
+                        io.to(room).emit('step-game-success', { status: 'success' }, gameData);
                     }
                 });
 
@@ -1527,6 +1517,38 @@ io.on('connection', socket => {
                 console.log('gameEnd test');
             };
         });
+    });
+
+    // Goes through the steps of the game
+    socket.on('step-game', function (room, callback) {
+        console.log('step-game test');
+
+        // Get the users in the room
+        let usersInRoom = getUsersInRoom(room);
+        shuffle(usersInRoom); // Shuffle the array of users
+        assignTurnOrder(usersInRoom); // Assign each user a turn order
+
+        // Constant for the game instance for the room
+        const game = games.get(room);
+        if (game) { // If a game instance exists for the room
+            try { // Try to step the game
+                // Step the game
+                game.step();
+                let gameData = { // Data to send to the client
+                    game: game, // Game instance which holds all the game data for that instance
+                    usersInRoom: usersInRoom, // Users in the room
+                };
+                callback(null, { status: 'success' }); // No error
+                // Emit an event to the room that the game was stepped successful
+                io.to(room).emit('step-game-success', { status: 'success' }, gameData);
+            } catch (error) { // Catch any errors
+                // Emit an event to the room that the game was stepped unsuccessful
+                callback(error.message);
+            };
+        } else { // If a game instance does not exist for the room
+            // Emit an event to the room that no game was found for the room
+            callback('No game found for this room');
+        };
     });
 
     // When player is ready
@@ -1759,4 +1781,23 @@ function getUser(id) {
 function getUsersInRoom(room) {
     // Return the users in the room
     return UsersState.users.filter(user => user.room === room);
+};
+
+// Function to shuffle an array
+function shuffle(array) {
+    // Loops through the array based on the length of the array
+    for (let i = array.length - 1; i > 0; i--) {
+        // Randomly selects an index in the array
+        const j = Math.floor(Math.random() * (i + 1));
+        // Swaps the values of the two indexes
+        [array[i], array[j]] = [array[j], array[i]];
+    };
+};
+
+// Function to assign turn order
+function assignTurnOrder(usersInRoom) {
+    // Assign each user a turn order
+    for (let i = 0; i < usersInRoom.length; i++) {
+        usersInRoom[i].turnOrder = i + 1;
+    };
 };
