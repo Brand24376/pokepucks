@@ -1393,7 +1393,7 @@ io.on('connection', socket => {
                                 } else {
                                     this.turn = 0;
 
-
+                                }
                                 this.phase++;
 
                                 break;
