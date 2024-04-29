@@ -135,15 +135,9 @@ function joinRoom() {
         sessionStorage.setItem('roomCode', roomCode);
         sessionStorage.setItem('method', method);
 
-        // Emit 'enterRoom' event and wait for server response
-        socket.emit('enterRoom', { name: username, room: roomCode, method: method }, (error) => {
-            if (error) { // If there is an error
-                alert(error); // Alert the error
-            } else { // If there is no error
-                // Redirect to the chatroom page
-                window.location.href = CHATROOM_URL;
-            };
-        });
+        // Redirect to the chatroom page
+        window.location.href = CHATROOM_URL;
+
     } else { alert('Please fill in the room code field.') }; // Alert the user to fill in the room code field
 };
 
@@ -506,7 +500,7 @@ socket.on('step-game-success', (data, gameData) => {
                 }
 
                 __________________________________
-// Sergio testing resolving #101
+                // Sergio testing resolving #101
 
 
 
