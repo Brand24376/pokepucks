@@ -65,12 +65,16 @@ The ejs file for the chatroom.
             <input type="checkbox" id="ready-checkbox">
         </div>
 
+
         <textarea id="CollectedPogsPlayer1" rows="3" cols="5" style="overflow:auto;"
             readonly> Players 1 inventory: </textarea>
         <textarea id="CollectedPogsPlayer2" rows="3" cols="5" style="overflow:auto;"
             readonly> Players 2 inventory: </textarea>
             
         <div class="music"><button onclick="play()">music</button></div>
+
+        <textarea id="CollectedPogs" rows="3" cols="5" style="overflow:auto;" readonly> Collected Pogs: </textarea>
+
         <script>
             function play() {
                 var audio = new Audio('music/intro.mp3')
