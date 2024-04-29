@@ -206,7 +206,7 @@ io.on('connection', socket => {
 
     // Event handler for 'enterRoom', triggered when a user attempts to enter a room.
     // The event handler recieves an object containing the user's name, room, privacy, and method of entering the room.
-    socket.on('enterRoom', ({ name, room, privacy, method }, callback) => {
+    socket.once('enterRoom', ({ name, room, privacy, method }, callback) => {
         console.log(`${name} is entering room: ${room}`);
 
         // Get the previous room the user was in
@@ -1160,7 +1160,7 @@ io.on('connection', socket => {
                                 */
                                 console.log('Arena:', this.arena);
                                 console.log('case 0 test');
-                              
+
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
                                 if (this.turn == 0 && this.players[0].hp.length === 0 && this.players[0].pogsBackup.length > 0) {
@@ -1345,7 +1345,7 @@ io.on('connection', socket => {
                                                     console.log('Puck is flipped');
                                                     this.arena[i].side = 'up';
                                                     console.log(this.arena[i])
-                                                    
+
                                                     tempArena.push(this.arena[i]);
                                                     console.log(this.arena[i])
                                                 } else {
@@ -1375,10 +1375,10 @@ io.on('connection', socket => {
                                 }
                                 console.log(tempArena)
                                 this.arena.splice(0, 1);
-                                tempArena = [];                                
-                                
+                                tempArena = [];
+
                                 console.log('Arena:', this.arena.hp);
-                                
+
                                 this.phase++;
                                 break;
                             case 4://Discard pucks
@@ -1388,7 +1388,7 @@ io.on('connection', socket => {
                                  * checking rules for that puck, and special rules.
                                  * The phase is increased by 1.
                                 */
-                             
+
                                 console.log('case 4 test');
                                 if (this.turn == 0) {
                                     this.turn = 1;
@@ -1410,31 +1410,31 @@ io.on('connection', socket => {
                                 console.log(this.players[1].Slammer.side);
 
 
-                                    
 
-                                    //If player is the only player remaining with either hp or non flipped slammer, they win.
-                                    if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
-                                        this.stage = 'end';
-                                        console.log('player 2 wins');
-                                    };
-                                    if (this.players[1].hp.length == 0 && this.players[1].Slammer.side == 'up') {
-                                        this.stage = 'end';
-                                        console.log('player 1 wins');
-                                    };
-                                   
-                                    console.log('Arena:', this.arena);
-                                    this.phase++;
-                                    if (this.phase >= 5 && this.stage == 'loop') {
-                                        console.log('case 5 test258')
-                                        this.stage = 'loop';
-                                        this.phase = 0;
-                                    };
-                                    if (this.stage == 'end') {
-                                        this.phase = 0;
-                                    };
-                                    break;
 
-                                
+                                //If player is the only player remaining with either hp or non flipped slammer, they win.
+                                if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
+                                    this.stage = 'end';
+                                    console.log('player 2 wins');
+                                };
+                                if (this.players[1].hp.length == 0 && this.players[1].Slammer.side == 'up') {
+                                    this.stage = 'end';
+                                    console.log('player 1 wins');
+                                };
+
+                                console.log('Arena:', this.arena);
+                                this.phase++;
+                                if (this.phase >= 5 && this.stage == 'loop') {
+                                    console.log('case 5 test258')
+                                    this.stage = 'loop';
+                                    this.phase = 0;
+                                };
+                                if (this.stage == 'end') {
+                                    this.phase = 0;
+                                };
+                                break;
+
+
 
 
 
@@ -1640,8 +1640,8 @@ io.on('connection', socket => {
                 rooms: allActivePublicRooms,
             });
         };
-        
-        console.log(`User ${socket.id} disconnected`);  
+
+        console.log(`User ${socket.id} disconnected`);
 
     });
 
@@ -1688,6 +1688,7 @@ io.on('connection', socket => {
             };
 
             // Emit message to the room that the user has left
+            io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));
 
             // Emit updated user list to the room
             io.to(user.room).emit('userList', {
@@ -1701,7 +1702,7 @@ io.on('connection', socket => {
                 rooms: allActivePublicRooms,
             });
         };
-       
+
         console.log(`User ${socket.id} disconnected`);
 
     });
