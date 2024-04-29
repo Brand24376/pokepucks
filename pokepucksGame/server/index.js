@@ -305,8 +305,10 @@ io.on('connection', socket => {
 
                     // Emit a message to the user that they have joined the room
                     socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`));
+
+                    console.log('sjdkjkfznbfndzjknfdjkjklgdnsdklsdznjk');
                     // Emit a message to the room that the user has joined
-                    io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
+                    socket.broadcast.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
 
                     // Update user list for room
                     io.to(user.room).emit('userList', {
@@ -1575,13 +1577,6 @@ io.on('connection', socket => {
         };
     });
 
-    // For testing purposes, makes all players ready even if there aren't enough players which allows you to start the game
-    // Delete this when there is no longer a need for testing
-    socket.on('test start game', function (room, callback) {
-        console.log(`Test start game in room ${room}.`);
-        io.to(room).emit('all players ready');
-    });
-
     // When user leaves a room - to all others
     socket.on('leaveRoom', () => {
         console.log('leaveRoom test');
@@ -1645,8 +1640,9 @@ io.on('connection', socket => {
                 rooms: allActivePublicRooms,
             });
         };
+        
+        console.log(`User ${socket.id} disconnected`);  
 
-        console.log(`User ${socket.id} disconnected`);
     });
 
     // When user disconnects - to all others
@@ -1664,7 +1660,7 @@ io.on('connection', socket => {
 
         // If the user exists
         if (user) {
-            console.log(`# of Users in room after Disconnect: ${getUsersInRoom(user.room).length}`);
+            console.log(`# of Users in room after disconnect: ${getUsersInRoom(user.room).length}`);
 
             //If there are no users in the room
             if (getUsersInRoom(user.room).length === 0) {
@@ -1692,7 +1688,6 @@ io.on('connection', socket => {
             };
 
             // Emit message to the room that the user has left
-            io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));
 
             // Emit updated user list to the room
             io.to(user.room).emit('userList', {
@@ -1706,8 +1701,9 @@ io.on('connection', socket => {
                 rooms: allActivePublicRooms,
             });
         };
-
+       
         console.log(`User ${socket.id} disconnected`);
+
     });
 
     // Listening for a message event
