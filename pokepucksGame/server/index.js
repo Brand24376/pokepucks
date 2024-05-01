@@ -206,7 +206,7 @@ io.on('connection', socket => {
 
     // Event handler for 'enterRoom', triggered when a user attempts to enter a room.
     // The event handler recieves an object containing the user's name, room, privacy, and method of entering the room.
-    socket.on('enterRoom', ({ name, room, privacy, method }, callback) => {
+    socket.once('enterRoom', ({ name, room, privacy, method }, callback) => {
         console.log(`${name} is entering room: ${room}`);
 
         // Get the previous room the user was in
@@ -436,7 +436,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Officer Hicks",
-                        ids: [],
+                        ids: '2223A27',
                         type: "Trainer",
                         subtype: "",
                         found: "lottery",
@@ -452,7 +452,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Mr. Merkert",
-                        ids: [],
+                        ids: '2223A53',
                         type: "Trainer",
                         subtype: "",
                         found: "lottery",
@@ -500,7 +500,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Bike",
-                        ids: [],
+                        ids: '2223A42',
                         type: "Item", // Item, Trainer, Energy, Pokemon
                         subtype: "", // Unofficial category of puck
                         found: "mart", // Mart, Discovery, Lottery
@@ -519,7 +519,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fishing Rod",
-                        ids: [],
+                        ids: '2223A44',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -539,7 +539,7 @@ io.on('connection', socket => {
 
                     {
                         name: "Potions",
-                        ids: [],
+                        ids: '2223A22',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -555,7 +555,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Switch",
-                        ids: [],
+                        ids: '2223A29',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -571,7 +571,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Berry",
-                        ids: [],
+                        ids: '2223A37',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -603,7 +603,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Electric Energy",
-                        ids: [],
+                        ids: '2223A11',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -619,7 +619,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Water Energy",
-                        ids: [],
+                        ids: '2223A09',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -635,7 +635,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fire Energy",
-                        ids: [],
+                        ids: '2223A10',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -651,7 +651,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Grass Energy",
-                        ids: [],
+                        ids: '2223A12',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -667,7 +667,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fighting Energy",
-                        ids: [],
+                        ids: '2223A15',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -683,7 +683,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Psychic Energy",
-                        ids: [],
+                        ids: '2223A13',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -699,7 +699,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Normal Energy",
-                        ids: [],
+                        ids: '2223A211',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -731,7 +731,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Dark Energy",
-                        ids: [],
+                        ids: '2223A21',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -763,7 +763,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Dragon Energy",
-                        ids: [],
+                        ids: "N/A",
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -781,7 +781,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Full Heal",
-                        ids: [],
+                        ids: '2223A45',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -797,7 +797,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Focus Sash",
-                        ids: [],
+                        ids: '2223A35',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -829,7 +829,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Moon Stone",
-                        ids: [],
+                        ids: '2223A30',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -845,7 +845,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Thunder Stone",
-                        ids: [],
+                        ids: '2223A30',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -877,7 +877,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Water Stone",
-                        ids: [],
+                        ids: '2223A32',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -893,7 +893,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fire Stone",
-                        ids: [],
+                        ids: '2223A31',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -909,7 +909,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Old Amber",
-                        ids: [],
+                        ids: '2223A47',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -941,7 +941,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Silph Scope",
-                        ids: [],
+                        ids: '2223A36',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -957,7 +957,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM01 Cut",
-                        ids: [],
+                        ids: '2223A38',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -973,7 +973,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM02 Fly",
-                        ids: [],
+                        ids: '2223A39',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -989,7 +989,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM03 Surf",
-                        ids: [],
+                        ids: '2223A40',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -1005,7 +1005,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM04 Dig",
-                        ids: [],
+                        ids: '2223A41',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -1019,13 +1019,7 @@ io.on('connection', socket => {
                             }]
                         }
                     },
-
-                ].map((puck, index) => {
-                    return {
-                        ...puck,
-                        id: index
-                    };
-                });
+                ]; 
 
                 class Slammer {
                     constructor(name, weight, side) {
@@ -1158,7 +1152,7 @@ io.on('connection', socket => {
                                 */
                                 console.log('Arena:', this.arena);
                                 console.log('case 0 test');
-                              
+
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
                                 if (this.turn == 0 && this.players[0].hp.length === 0 && this.players[0].pogsBackup.length > 0) {
@@ -1343,7 +1337,7 @@ io.on('connection', socket => {
                                                     console.log('Puck is flipped');
                                                     this.arena[i].side = 'up';
                                                     console.log(this.arena[i])
-                                                    
+
                                                     tempArena.push(this.arena[i]);
                                                     console.log(this.arena[i])
                                                 } else {
@@ -1373,10 +1367,10 @@ io.on('connection', socket => {
                                 }
                                 console.log(tempArena)
                                 this.arena.splice(0, 1);
-                                tempArena = [];                                
-                                
+                                tempArena = [];
+
                                 console.log('Arena:', this.arena.hp);
-                                
+
                                 this.phase++;
                                 break;
                             case 4://Discard pucks
@@ -1386,14 +1380,14 @@ io.on('connection', socket => {
                                  * checking rules for that puck, and special rules.
                                  * The phase is increased by 1.
                                 */
-                             
+
                                 console.log('case 4 test');
                                 if (this.turn == 0) {
                                     this.turn = 1;
                                 } else {
                                     this.turn = 0;
 
-                                }
+                                };
                                 this.phase++;
 
                                 break;
@@ -1408,31 +1402,31 @@ io.on('connection', socket => {
                                 console.log(this.players[1].Slammer.side);
 
 
-                                    
 
-                                    //If player is the only player remaining with either hp or non flipped slammer, they win.
-                                    if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
-                                        this.stage = 'end';
-                                        console.log('player 2 wins');
-                                    };
-                                    if (this.players[1].hp.length == 0 && this.players[1].Slammer.side == 'up') {
-                                        this.stage = 'end';
-                                        console.log('player 1 wins');
-                                    };
-                                   
-                                    console.log('Arena:', this.arena);
-                                    this.phase++;
-                                    if (this.phase >= 5 && this.stage == 'loop') {
-                                        console.log('case 5 test258')
-                                        this.stage = 'loop';
-                                        this.phase = 0;
-                                    };
-                                    if (this.stage == 'end') {
-                                        this.phase = 0;
-                                    };
-                                    break;
 
-                                
+                                //If player is the only player remaining with either hp or non flipped slammer, they win.
+                                if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
+                                    this.stage = 'end';
+                                    console.log('player 2 wins');
+                                };
+                                if (this.players[1].hp.length == 0 && this.players[1].Slammer.side == 'up') {
+                                    this.stage = 'end';
+                                    console.log('player 1 wins');
+                                };
+
+                                console.log('Arena:', this.arena);
+                                this.phase++;
+                                if (this.phase >= 5 && this.stage == 'loop') {
+                                    console.log('case 5 test258')
+                                    this.stage = 'loop';
+                                    this.phase = 0;
+                                };
+                                if (this.stage == 'end') {
+                                    this.phase = 0;
+                                };
+                                break;
+
+
 
 
 
