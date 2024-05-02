@@ -402,7 +402,7 @@ io.on('connection', socket => {
                 class Puck {
                     constructor(name, weight, side) {
                         this.name = name;
-                        this.weight = weight;
+                        this.weight = 1;
                         this.side = side;
                     };
                     flip() {
@@ -995,6 +995,7 @@ io.on('connection', socket => {
                         found: "discovery",
                         img: "",
                         description: "",
+                        
                         se: {
                             adventure: [],
                             battle: [{
@@ -1019,12 +1020,16 @@ io.on('connection', socket => {
                             }]
                         }
                     },
-                ]; 
+                ];
+                var tempArena = [];
+                let array = Pucks;
+                array = array.map(obj => ({ ...obj, side: 'down' }));
+               
 
                 class Slammer {
-                    constructor(name, weight, side) {
+                    constructor(name, side) {
                         this.name = name;
-                        this.weight = weight;
+                        this.weight = 1;
                         this.side = side;
                     };
 
@@ -1101,7 +1106,8 @@ io.on('connection', socket => {
                                     for (let i = 0; i < this.players.length; i++) {
                                         for (let j = 0; j < 15; j++) {
                                             console.log(this.players[i].hp);
-                                            this.players[i].hp.push(new Puck('pog', 1, 'down'));
+                                            // Use the pogs from the Pucks constant
+                                            this.players[i].hp.push(new Puck(Pucks[j].name, Pucks[j].value, 'down'));
                                         };
                                     };
                                 };
@@ -1365,11 +1371,6 @@ io.on('connection', socket => {
                                         this.arena.splice(slammerIndex, 1);
                                     };
                                 }
-                                console.log(tempArena)
-                                this.arena.splice(0, 1);
-                                tempArena = [];
-
-                                console.log('Arena:', this.arena.hp);
 
                                 this.phase++;
                                 break;
@@ -1388,7 +1389,9 @@ io.on('connection', socket => {
                                     this.turn = 0;
 
                                 };
+
                                 this.phase++;
+
 
                                 break;
                             case 5://Check for winner
@@ -1430,17 +1433,7 @@ io.on('connection', socket => {
 
 
 
-                                console.log('Arena:', this.arena);
-                                this.phase++;
-                                if (this.phase >= 5 && this.stage == 'loop') {
-                                    console.log('case 5 test258')
-                                    this.stage = 'loop';
-                                    this.phase = 0;
-                                };
-                                if (this.stage == 'end') {
-                                    this.phase = 0;
-                                };
-                                break;
+
                         };
                     };
                     stage_end() {
