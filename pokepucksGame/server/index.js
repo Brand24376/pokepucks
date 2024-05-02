@@ -206,7 +206,7 @@ io.on('connection', socket => {
 
     // Event handler for 'enterRoom', triggered when a user attempts to enter a room.
     // The event handler recieves an object containing the user's name, room, privacy, and method of entering the room.
-    socket.on('enterRoom', ({ name, room, privacy, method }, callback) => {
+    socket.once('enterRoom', ({ name, room, privacy, method }, callback) => {
         console.log(`${name} is entering room: ${room}`);
 
         // Get the previous room the user was in
