@@ -55,7 +55,7 @@ const IP_ADDRESS = getLocalIP();
 const PORT = process.env.PORT || 3000;
 
 // Constants for the OAuth and redirect URLs
-const AUTH_URL = `http://172.16.3.162:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
+const AUTH_URL = `http://172.16.3.167:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
 const THIS_URL = `http://${IP_ADDRESS}:${PORT}/login`; // `http://ipAddressOfThisServer:port/login`;
 const GAME_URL = `http://${IP_ADDRESS}:${PORT}/`; // `http://ipAddressOfThisServer:port/`;
 
