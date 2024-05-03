@@ -22,10 +22,9 @@ The ejs file for the chatroom.
     <script defer src="app.js"></script>
     <!-- "defer" tells the file to not load the JS until everything else is essentially loaded -->
 </head>
-<style>
+<style class="image">
     body {
-        background-image: url("img/ad.ng");
-        background-size: cover;
+        margin: auto;
         width: 100%;
         height: 100%;
     }
@@ -86,19 +85,19 @@ The ejs file for the chatroom.
         audio.play()
     }
     
-    let currentIndex = 0;
-    const images = ["url(img/ash.png)", "url('img/fhc.png')", "url(img/char.png)", "url('img/fgh.png')", "url('img/jfh.png')", "url('img/gren.png')", "url(img/lucario.png)"]
-    const body = document.querySelector('body')
+    // let currentIndex = 0;
+    // const images = ["url(img/ash.png)", "url('img/fhc.png')", "url(img/char.png)", "url('img/fgh.png')", "url('img/jfh.png')", "url('img/gren.png')", "url(img/lucario.png)"]
+    // const body = document.querySelector('body')
 
-    function changeBg() {
-        const bg = images[currentIndex];
-        body.style.backgroundImage = bg;
-        currentIndex = (currentIndex + 1) % images.length;
-        console.log(currentIndex);
-    };
+    // function changeBg() {
+    //     const bg = images[currentIndex];
+    //     body.style.backgroundImage = bg;
+    //     currentIndex = (currentIndex + 1) % images.length;
+    //     console.log(currentIndex);
+    // };
 
-    changeBg();
-    setInterval(changeBg, 2820) // Every 1000 equals 1 second
+    // changeBg();
+    // setInterval(changeBg, 2820) // Every 1000 equals 1 second
 </script>
 
 </html>
