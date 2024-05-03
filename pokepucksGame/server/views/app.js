@@ -305,11 +305,22 @@ document.getElementById('ready-checkbox').addEventListener('change', function (e
         console.log('Ready checkbox checked. Emitting player ready event.');
         socket.emit('player ready', roomCode);
     };
+    if (e.target.checked === false) {
+        console.log('Ready checkbox unchecked. Emitting player not ready event.');
+        socket.emit('player not ready', roomCode);
+    };
 });
 
 socket.on('all players ready', function () {
     console.log('Received all players ready event. Enabling start game button.');
     document.getElementById('start-game-button').disabled = false;
+});
+
+socket.on('not all players ready', function () {
+    let startGameButton = document.getElementById('start-game-button');
+    if (!startGameButton.disabled) {
+        startGameButton.disabled = true;
+    }
 });
 
 socket.on('game started', function () {
@@ -537,15 +548,9 @@ socket.on('step-game-success', (data, gameData) => {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
 
-                __________________________________
-                // Sergio testing resolving #101
-
-
-
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
-
 
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
                 console.log('Testing for loop 3');
@@ -600,9 +605,6 @@ socket.on('step-game-success', (data, gameData) => {
                 // Use the function to select a pog for a player
                 // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
                 // selectPog(player, selectedPogIndex);
-                __________________________________
-
-
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
@@ -649,9 +651,6 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
-
-
-
                 break;
 
 
@@ -775,6 +774,10 @@ socket.on('step-game-success', (data, gameData) => {
     };
 
     step();
+});
+
+socket.on('playerCountChange', function (data) {
+    document.getElementById('readyCount').textContent = `People Ready: ${data.readyCount}/${data.totalCount}`;
 });
 
 socket.on('step-game-error', (data) => {

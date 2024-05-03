@@ -60,9 +60,11 @@ The ejs file for the chatroom.
         <div class="strste">
             <button onclick="leaveRoom()">Leave Room</button>
             <button id="step-game-button" disabled="true" onclick="stepGameClient()">Step Game</button>
-            <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game</button>
+            <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game (2 People needed to
+                Start the Game)</button>
             <label for="ready-checkbox">I'm ready:</label>
             <input type="checkbox" id="ready-checkbox">
+            <p id="readyCount">People Ready: 0/0</p>
         </div>
 
 
@@ -70,7 +72,7 @@ The ejs file for the chatroom.
             readonly> Players 1 inventory: </textarea>
         <textarea id="CollectedPogsPlayer2" rows="3" cols="5" style="overflow:auto;"
             readonly> Players 2 inventory: </textarea>
-            
+
         <div class="music"><button onclick="play()">music</button></div>
 
         
