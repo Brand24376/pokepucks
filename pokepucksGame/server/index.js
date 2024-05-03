@@ -269,6 +269,11 @@ io.on('connection', socket => {
 
             console.log(`# of Users in room after create: ${getUsersInRoom(user.room).length}`);
 
+            // After a user joins the room...
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
             console.log('create room end test');
         };
 
@@ -305,10 +310,8 @@ io.on('connection', socket => {
 
                     // Emit a message to the user that they have joined the room
                     socket.emit('message', buildMsg(ADMIN, `You have joined the ${user.room} chat room`));
-
-                    console.log('sjdkjkfznbfndzjknfdjkjklgdnsdklsdznjk');
                     // Emit a message to the room that the user has joined
-                    socket.broadcast.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
+                    io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has joined the room`));
 
                     // Update user list for room
                     io.to(user.room).emit('userList', {
@@ -338,11 +341,17 @@ io.on('connection', socket => {
                 socket.emit('joinedRoomNotFound'); // Emit an event to the user that the room was not found
                 return;
             };
+
+            // After a user joins the room...
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
             console.log('join room end test');
         };
 
         // Server-side game logic
-        let gameStarted = new Map(); // Map to hold the game started status for each room
+        var gameStarted = new Map(); // Map to hold the game started status for each room
 
         // Event handler for 'gameStart', triggered when a user starts a game
         socket.on('gameStart', () => {
@@ -404,7 +413,7 @@ io.on('connection', socket => {
                 class Puck {
                     constructor(name, weight, side) {
                         this.name = name;
-                        this.weight = weight;
+                        this.weight = 1;
                         this.side = side;
                     };
                     flip() {
@@ -438,7 +447,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Officer Hicks",
-                        ids: [],
+                        ids: '2223A27',
                         type: "Trainer",
                         subtype: "",
                         found: "lottery",
@@ -454,7 +463,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Mr. Merkert",
-                        ids: [],
+                        ids: '2223A53',
                         type: "Trainer",
                         subtype: "",
                         found: "lottery",
@@ -502,7 +511,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Bike",
-                        ids: [],
+                        ids: '2223A42',
                         type: "Item", // Item, Trainer, Energy, Pokemon
                         subtype: "", // Unofficial category of puck
                         found: "mart", // Mart, Discovery, Lottery
@@ -521,7 +530,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fishing Rod",
-                        ids: [],
+                        ids: '2223A44',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -541,7 +550,7 @@ io.on('connection', socket => {
 
                     {
                         name: "Potions",
-                        ids: [],
+                        ids: '2223A22',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -557,7 +566,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Switch",
-                        ids: [],
+                        ids: '2223A29',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -573,7 +582,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Berry",
-                        ids: [],
+                        ids: '2223A37',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -605,7 +614,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Electric Energy",
-                        ids: [],
+                        ids: '2223A11',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -621,7 +630,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Water Energy",
-                        ids: [],
+                        ids: '2223A09',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -637,7 +646,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fire Energy",
-                        ids: [],
+                        ids: '2223A10',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -653,7 +662,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Grass Energy",
-                        ids: [],
+                        ids: '2223A12',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -669,7 +678,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fighting Energy",
-                        ids: [],
+                        ids: '2223A15',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -685,7 +694,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Psychic Energy",
-                        ids: [],
+                        ids: '2223A13',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -701,7 +710,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Normal Energy",
-                        ids: [],
+                        ids: '2223A211',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -733,7 +742,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Dark Energy",
-                        ids: [],
+                        ids: '2223A21',
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -765,7 +774,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Dragon Energy",
-                        ids: [],
+                        ids: "N/A",
                         type: "Item",
                         subtype: "Energy",
                         found: "mart",
@@ -783,7 +792,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Full Heal",
-                        ids: [],
+                        ids: '2223A45',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -799,7 +808,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Focus Sash",
-                        ids: [],
+                        ids: '2223A35',
                         type: "Item",
                         subtype: "",
                         found: "mart",
@@ -831,7 +840,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Moon Stone",
-                        ids: [],
+                        ids: '2223A30',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -847,7 +856,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Thunder Stone",
-                        ids: [],
+                        ids: '2223A30',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -879,7 +888,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Water Stone",
-                        ids: [],
+                        ids: '2223A32',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -895,7 +904,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Fire Stone",
-                        ids: [],
+                        ids: '2223A31',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -911,7 +920,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Old Amber",
-                        ids: [],
+                        ids: '2223A47',
                         type: "Item",
                         subtype: "Power Stone",
                         found: "mart",
@@ -943,7 +952,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "Silph Scope",
-                        ids: [],
+                        ids: '2223A36',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -959,7 +968,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM01 Cut",
-                        ids: [],
+                        ids: '2223A38',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -975,7 +984,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM02 Fly",
-                        ids: [],
+                        ids: '2223A39',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -991,12 +1000,13 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM03 Surf",
-                        ids: [],
+                        ids: '2223A40',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
                         img: "",
                         description: "",
+                        
                         se: {
                             adventure: [],
                             battle: [{
@@ -1007,7 +1017,7 @@ io.on('connection', socket => {
                     },
                     {
                         name: "HM04 Dig",
-                        ids: [],
+                        ids: '2223A41',
                         type: "Item",
                         subtype: "",
                         found: "discovery",
@@ -1021,18 +1031,15 @@ io.on('connection', socket => {
                             }]
                         }
                     },
-
-                ].map((puck, index) => {
-                    return {
-                        ...puck,
-                        id: index
-                    };
-                });
+                ];
+                var tempArena = [];
+                let array = Pucks;
+                array = array.map(obj => ({ ...obj, side: 'down' }));
 
                 class Slammer {
-                    constructor(name, weight, side) {
+                    constructor(name, side) {
                         this.name = name;
-                        this.weight = weight;
+                        this.weight = 1;
                         this.side = side;
                     };
 
@@ -1109,7 +1116,8 @@ io.on('connection', socket => {
                                     for (let i = 0; i < this.players.length; i++) {
                                         for (let j = 0; j < 15; j++) {
                                             console.log(this.players[i].hp);
-                                            this.players[i].hp.push(new Puck('pog', 1, 'down'));
+                                            // Use the pogs from the Pucks constant
+                                            this.players[i].hp.push(new Puck(Pucks[j].name, Pucks[j].value, 'down'));
                                         };
                                     };
                                 };
@@ -1373,11 +1381,6 @@ io.on('connection', socket => {
                                         this.arena.splice(slammerIndex, 1);
                                     };
                                 }
-                                console.log(tempArena)
-                                this.arena.splice(0, 1);
-                                tempArena = [];
-
-                                console.log('Arena:', this.arena.hp);
 
                                 this.phase++;
                                 break;
@@ -1395,8 +1398,10 @@ io.on('connection', socket => {
                                 } else {
                                     this.turn = 0;
 
-                                }
+                                };
+
                                 this.phase++;
+
 
                                 break;
                             case 5://Check for winner
@@ -1408,9 +1413,6 @@ io.on('connection', socket => {
                                 console.log('case 5 test');
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
-
-
-
 
                                 //If player is the only player remaining with either hp or non flipped slammer, they win.
                                 if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
@@ -1433,11 +1435,6 @@ io.on('connection', socket => {
                                     this.phase = 0;
                                 };
                                 break;
-
-
-
-
-
                                 console.log('Arena:', this.arena);
                                 this.phase++;
                                 if (this.phase >= 5 && this.stage == 'loop') {
@@ -1575,6 +1572,38 @@ io.on('connection', socket => {
         } else if (roomSize < 2) { // If there are less than 2 users in the room
             console.log(`Not enough players in room ${room}. Waiting for more players.`); // Log that there are not enough players
         };
+
+        // After a player becomes ready...
+        let readyCount = readyPlayers.get(room).length;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+    });
+
+    // When player is not ready
+    socket.on('player not ready', function (room, callback) {
+        // If the room is in the readyPlayers map
+        if (readyPlayers.has(room)) {
+            // Remove the player's id from the room in the readyPlayers map
+            let players = readyPlayers.get(room);
+            let index = players.indexOf(socket.id);
+            if (index !== -1) {
+                players.splice(index, 1);
+            }
+        };
+
+        console.log(readyPlayers.get(room));
+        console.log(readyPlayers);
+        console.log(`Player ${socket.id} is not ready in room ${room}. Total ready players: ${readyPlayers.get(room).length}`);
+
+        // After a player becomes not ready...
+        let readyCount = readyPlayers.get(room).length;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
+        // If not all players are ready, emit 'not all players ready' event
+        if (readyCount < totalCount) {
+            io.to(room).emit('not all players ready');
+        };
     });
 
     // When user leaves a room - to all others
@@ -1641,8 +1670,13 @@ io.on('connection', socket => {
             });
         };
 
-        console.log(`User ${socket.id} disconnected`);
+        // After a user leaves the room...
+        let room = user.room;
+        let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
 
+        console.log(`User ${socket.id} disconnected`);
     });
 
     // When user disconnects - to all others
@@ -1660,7 +1694,7 @@ io.on('connection', socket => {
 
         // If the user exists
         if (user) {
-            console.log(`# of Users in room after disconnect: ${getUsersInRoom(user.room).length}`);
+            console.log(`# of Users in room after Disconnect: ${getUsersInRoom(user.room).length}`);
 
             //If there are no users in the room
             if (getUsersInRoom(user.room).length === 0) {
@@ -1701,10 +1735,15 @@ io.on('connection', socket => {
                 // Get all active public rooms
                 rooms: allActivePublicRooms,
             });
+
+            // After a user leaves the room...
+            let room = user.room;
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
         };
 
         console.log(`User ${socket.id} disconnected`);
-
     });
 
     // Listening for a message event

@@ -305,11 +305,22 @@ document.getElementById('ready-checkbox').addEventListener('change', function (e
         console.log('Ready checkbox checked. Emitting player ready event.');
         socket.emit('player ready', roomCode);
     };
+    if (e.target.checked === false) {
+        console.log('Ready checkbox unchecked. Emitting player not ready event.');
+        socket.emit('player not ready', roomCode);
+    };
 });
 
 socket.on('all players ready', function () {
     console.log('Received all players ready event. Enabling start game button.');
     document.getElementById('start-game-button').disabled = false;
+});
+
+socket.on('not all players ready', function () {
+    let startGameButton = document.getElementById('start-game-button');
+    if (!startGameButton.disabled) {
+        startGameButton.disabled = true;
+    }
 });
 
 socket.on('game started', function () {
@@ -344,7 +355,45 @@ function startGameClient() {
         stepGameClient();
     };
 };
+let gameStopped = false;
 
+function drawFlippedPogs() {
+    for(let i = 0; i < Pucks.length; i++) {
+        let pog = gameData.game.Pucks[i];
+        if(pog.side === 'up') {
+            ctx.drawImage(whiteSide, 100,100,100,100);
+            gameStopped = true;
+        }
+    }
+
+    if(gameStopped) {
+        let pickedPog = promptPlayerToPickPog();
+        returnFlippedPogsToPile(pickedPog);
+        gameStopped = false;
+    }
+}
+
+function promptPlayerToPickPog() {
+    // Find the flipped pogs
+    let flippedPogs =  gameData.game.arena.filter(pog => pog.side === 'up');
+
+    // Display the flipped pogs to the player
+    let message = "Flipped pogs:\n";
+    for(let i = 0; i < flippedPogs.length; i++) {
+        message += `ID: ${flippedPogs[i].id}, Name: ${flippedPogs[i].name}\n`;
+    }
+    alert(message);
+
+    // Prompt the player to pick a pog
+    let pogId = prompt("Please enter the ID of the pog you want to pick:");
+    let pickedPog = gameData.game.arena.filter(pog => pog.id === pogId);
+    return pickedPog;
+}
+
+function returnFlippedPogsToPile(pickedPog) {
+    // Implement the logic to return the flipped pogs to the pile
+    // Exclude the picked pog
+}
 function stepGameClient() { // pass the room as a parameter
     const room = sessionStorage.getItem('roomCode');
     // Check that the socket is connected
@@ -499,15 +548,9 @@ socket.on('step-game-success', (data, gameData) => {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
 
-                __________________________________
-                // Sergio testing resolving #101
-
-
-
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
-
 
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
                 console.log('Testing for loop 3');
@@ -562,9 +605,6 @@ socket.on('step-game-success', (data, gameData) => {
                 // Use the function to select a pog for a player
                 // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
                 // selectPog(player, selectedPogIndex);
-                __________________________________
-
-
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
@@ -611,9 +651,6 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
-
-
-
                 break;
 
 
@@ -697,6 +734,7 @@ socket.on('step-game-success', (data, gameData) => {
                 if (gameData.game.turn == 0) {
                 } else {
                 };
+               
                 break;
             case 5://Check for winner
                 console.log('case 5 test');
@@ -715,6 +753,7 @@ socket.on('step-game-success', (data, gameData) => {
         };
         if (gameData.game.stage == 'end') {
         };
+        drawFlippedPogs();
     };
 
     function stage_end() {
@@ -735,6 +774,10 @@ socket.on('step-game-success', (data, gameData) => {
     };
 
     step();
+});
+
+socket.on('playerCountChange', function (data) {
+    document.getElementById('readyCount').textContent = `People Ready: ${data.readyCount}/${data.totalCount}`;
 });
 
 socket.on('step-game-error', (data) => {
