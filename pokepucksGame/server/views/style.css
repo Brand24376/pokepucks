@@ -309,7 +309,7 @@ label[for="ready-checkbox"] {
 
 #CollectedPogsPlayer1 {
     position: absolute;
-    top: 0;
+    top: 10;
     right: 100px;
     z-index: 2;
 

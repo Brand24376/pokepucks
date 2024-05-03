@@ -355,7 +355,45 @@ function startGameClient() {
         stepGameClient();
     };
 };
+let gameStopped = false;
 
+function drawFlippedPogs() {
+    for(let i = 0; i < Pucks.length; i++) {
+        let pog = gameData.game.Pucks[i];
+        if(pog.side === 'up') {
+            ctx.drawImage(whiteSide, 100,100,100,100);
+            gameStopped = true;
+        }
+    }
+
+    if(gameStopped) {
+        let pickedPog = promptPlayerToPickPog();
+        returnFlippedPogsToPile(pickedPog);
+        gameStopped = false;
+    }
+}
+
+function promptPlayerToPickPog() {
+    // Find the flipped pogs
+    let flippedPogs =  gameData.game.arena.filter(pog => pog.side === 'up');
+
+    // Display the flipped pogs to the player
+    let message = "Flipped pogs:\n";
+    for(let i = 0; i < flippedPogs.length; i++) {
+        message += `ID: ${flippedPogs[i].id}, Name: ${flippedPogs[i].name}\n`;
+    }
+    alert(message);
+
+    // Prompt the player to pick a pog
+    let pogId = prompt("Please enter the ID of the pog you want to pick:");
+    let pickedPog = gameData.game.arena.filter(pog => pog.id === pogId);
+    return pickedPog;
+}
+
+function returnFlippedPogsToPile(pickedPog) {
+    // Implement the logic to return the flipped pogs to the pile
+    // Exclude the picked pog
+}
 function stepGameClient() { // pass the room as a parameter
     const room = sessionStorage.getItem('roomCode');
     // Check that the socket is connected
@@ -696,6 +734,7 @@ socket.on('step-game-success', (data, gameData) => {
                 if (gameData.game.turn == 0) {
                 } else {
                 };
+               
                 break;
             case 5://Check for winner
                 console.log('case 5 test');
@@ -714,6 +753,7 @@ socket.on('step-game-success', (data, gameData) => {
         };
         if (gameData.game.stage == 'end') {
         };
+        drawFlippedPogs();
     };
 
     function stage_end() {
