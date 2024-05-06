@@ -358,15 +358,15 @@ function startGameClient() {
 let gameStopped = false;
 
 function drawFlippedPogs() {
-    for(let i = 0; i < Pucks.length; i++) {
+    for (let i = 0; i < Pucks.length; i++) {
         let pog = gameData.game.Pucks[i];
-        if(pog.side === 'up') {
-            ctx.drawImage(whiteSide, 100,100,100,100);
+        if (pog.side === 'up') {
+            ctx.drawImage(whiteSide, 100, 100, 100, 100);
             gameStopped = true;
         }
     }
 
-    if(gameStopped) {
+    if (gameStopped) {
         let pickedPog = promptPlayerToPickPog();
         returnFlippedPogsToPile(pickedPog);
         gameStopped = false;
@@ -375,11 +375,11 @@ function drawFlippedPogs() {
 
 function promptPlayerToPickPog() {
     // Find the flipped pogs
-    let flippedPogs =  gameData.game.arena.filter(pog => pog.side === 'up');
+    let flippedPogs = gameData.game.arena.filter(pog => pog.side === 'up');
 
     // Display the flipped pogs to the player
     let message = "Flipped pogs:\n";
-    for(let i = 0; i < flippedPogs.length; i++) {
+    for (let i = 0; i < flippedPogs.length; i++) {
         message += `ID: ${flippedPogs[i].id}, Name: ${flippedPogs[i].name}\n`;
     }
     alert(message);
@@ -444,6 +444,7 @@ socket.on('step-game-success', (data, gameData) => {
         };
     };
     updateStepGameButton();
+
 
     function step() {
         switch (gameData.game.stage) {
@@ -547,6 +548,57 @@ socket.on('step-game-success', (data, gameData) => {
                 for (let i = 0; i < gameData.game.players[1].prize.length; i++) {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
+
+
+
+
+
+                _________________________________________________________________________________
+                // sergio working on issue #117
+
+                function drawFlippedPogs() {
+                    // This loop goes through each pog in the Pucks array
+                    for (let i = 0; i < Pucks.length; i++) {
+                        let pog = gameData.game.Pucks[i];
+                        // If the pog's side is 'up', it draws the pog on the canvas and sets gameStopped to true
+                        if (pog.side === 'up') {
+                            ctx.drawImage(whiteSide, 100, 100, 100, 100);
+                            gameStopped = true;
+                        }
+                    }
+
+                    // If gameStopped is true (meaning a pog was flipped up), it executes the following code
+                    if (gameStopped) {
+                        // Disables the step game button to pause the game
+                        const stepGameButton = document.getElementById('step-game-button');
+                        stepGameButton.disabled = true;
+
+                        // Prompts the player to pick a pog and returns the picked pog
+                        let pickedPog = promptPlayerToPickPog();
+                        // Returns the flipped pogs to the pile, excluding the picked pog
+                        returnFlippedPogsToPile(pickedPog);
+
+                        // Determines the winning player based on the current turn and adds the picked pog to the winning player's inventory
+                        let winningPlayer = gameData.game.turn === 0 ? gameData.game.players[1] : gameData.game.players[0];
+                        addToInventory(winningPlayer, pickedPog);
+
+                        // Finds the index of the picked pog in the Pucks array and removes it from the array
+                        let pogIndex = gameData.game.Pucks.findIndex(pog => pog.id === pickedPog.id);
+                        if (pogIndex !== -1) {
+                            gameData.game.Pucks.splice(pogIndex, 1);
+                        }
+
+                        // Sets gameStopped to false to indicate that no pogs are flipped up
+                        gameStopped = false;
+
+                        // Enables the step game button to resume the game
+                        stepGameButton.disabled = false;
+                    }
+                }
+
+                __________________________________
+                // Sergio testing resolving #101
+
 
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
@@ -734,7 +786,7 @@ socket.on('step-game-success', (data, gameData) => {
                 if (gameData.game.turn == 0) {
                 } else {
                 };
-               
+
                 break;
             case 5://Check for winner
                 console.log('case 5 test');

@@ -2,7 +2,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Logan Cruz, Antonio Cruz
+Editors: Brandon Camacho, Logan Cruz, Antonio Cruz, Sergio Davalos 
 
 <Description>
 The ejs file for the chatroom.
@@ -68,10 +68,14 @@ The ejs file for the chatroom.
         </div>
 
 
-        <textarea id="CollectedPogsPlayer1" rows="3" cols="5" style="overflow:auto;"
+        <!-- this creates ids for the player's inventory.  -->
+        <textarea id="CollectedPogsPlayer1" rows="3" cols="5" style="overflow:auto;" 
             readonly> Players 1 inventory: </textarea>
         <textarea id="CollectedPogsPlayer2" rows="3" cols="5" style="overflow:auto;"
             readonly> Players 2 inventory: </textarea>
+            
+
+            <!-- creates a music button that plays the music when clicked  -->
 
         <div class="music"><button onclick="play()">music</button></div>
 
