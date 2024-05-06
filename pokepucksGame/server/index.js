@@ -269,6 +269,11 @@ io.on('connection', socket => {
 
             console.log(`# of Users in room after create: ${getUsersInRoom(user.room).length}`);
 
+            // After a user joins the room...
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
             console.log('create room end test');
         };
 
@@ -336,11 +341,17 @@ io.on('connection', socket => {
                 socket.emit('joinedRoomNotFound'); // Emit an event to the user that the room was not found
                 return;
             };
+
+            // After a user joins the room...
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
             console.log('join room end test');
         };
 
         // Server-side game logic
-        let gameStarted = new Map(); // Map to hold the game started status for each room
+        var gameStarted = new Map(); // Map to hold the game started status for each room
 
         // Event handler for 'gameStart', triggered when a user starts a game
         socket.on('gameStart', () => {
@@ -1024,7 +1035,6 @@ io.on('connection', socket => {
                 var tempArena = [];
                 let array = Pucks;
                 array = array.map(obj => ({ ...obj, side: 'down' }));
-               
 
                 class Slammer {
                     constructor(name, side) {
@@ -1404,9 +1414,6 @@ io.on('connection', socket => {
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
 
-
-
-
                                 //If player is the only player remaining with either hp or non flipped slammer, they win.
                                 if (this.players[0].hp.length == 0 && this.players[0].Slammer.side == 'up') {
                                     this.stage = 'end';
@@ -1428,12 +1435,17 @@ io.on('connection', socket => {
                                     this.phase = 0;
                                 };
                                 break;
-
-
-
-
-
-
+                                console.log('Arena:', this.arena);
+                                this.phase++;
+                                if (this.phase >= 5 && this.stage == 'loop') {
+                                    console.log('case 5 test258')
+                                    this.stage = 'loop';
+                                    this.phase = 0;
+                                };
+                                if (this.stage == 'end') {
+                                    this.phase = 0;
+                                };
+                                break;
                         };
                     };
                     stage_end() {
@@ -1560,13 +1572,38 @@ io.on('connection', socket => {
         } else if (roomSize < 2) { // If there are less than 2 users in the room
             console.log(`Not enough players in room ${room}. Waiting for more players.`); // Log that there are not enough players
         };
+
+        // After a player becomes ready...
+        let readyCount = readyPlayers.get(room).length;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
     });
 
-    // For testing purposes, makes all players ready even if there aren't enough players which allows you to start the game
-    // Delete this when there is no longer a need for testing
-    socket.on('test start game', function (room, callback) {
-        console.log(`Test start game in room ${room}.`);
-        io.to(room).emit('all players ready');
+    // When player is not ready
+    socket.on('player not ready', function (room, callback) {
+        // If the room is in the readyPlayers map
+        if (readyPlayers.has(room)) {
+            // Remove the player's id from the room in the readyPlayers map
+            let players = readyPlayers.get(room);
+            let index = players.indexOf(socket.id);
+            if (index !== -1) {
+                players.splice(index, 1);
+            }
+        };
+
+        console.log(readyPlayers.get(room));
+        console.log(readyPlayers);
+        console.log(`Player ${socket.id} is not ready in room ${room}. Total ready players: ${readyPlayers.get(room).length}`);
+
+        // After a player becomes not ready...
+        let readyCount = readyPlayers.get(room).length;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
+        // If not all players are ready, emit 'not all players ready' event
+        if (readyCount < totalCount) {
+            io.to(room).emit('not all players ready');
+        };
     });
 
     // When user leaves a room - to all others
@@ -1633,6 +1670,12 @@ io.on('connection', socket => {
             });
         };
 
+        // After a user leaves the room...
+        let room = user.room;
+        let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+        let totalCount = getUsersInRoom(room).length;
+        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+
         console.log(`User ${socket.id} disconnected`);
     });
 
@@ -1692,6 +1735,12 @@ io.on('connection', socket => {
                 // Get all active public rooms
                 rooms: allActivePublicRooms,
             });
+
+            // After a user leaves the room...
+            let room = user.room;
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
+            let totalCount = getUsersInRoom(room).length;
+            io.to(room).emit('playerCountChange', { readyCount, totalCount });
         };
 
         console.log(`User ${socket.id} disconnected`);
