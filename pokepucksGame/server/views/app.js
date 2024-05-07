@@ -289,44 +289,61 @@ socket.on('joinedRoomNotFound', () => {
     window.location.href = LOBBY_URL;
 });
 
-// PokePucks Game Code
+// Get the black and white side images and the canvas element
 var blackSide = document.getElementById('blackSide');
 var whiteSide = document.getElementById('whiteSide');
 var canvas = document.getElementById('canvas');
+
+// Get the 2D rendering context for the canvas
 var ctx = canvas.getContext('2d');
+
+// Set the font for the context
 ctx.font = '20px Arial';
+
+// Set the width and height of the canvas to the inner width and height of the window
 document.getElementById('canvas').width = window.innerWidth;
 document.getElementById('canvas').height = window.innerHeight;
+
+// Set the fill style for the context to silver and fill the entire canvas
 ctx.fillStyle = 'silver';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+// Add an event listener for the change event on the ready checkbox
 document.getElementById('ready-checkbox').addEventListener('change', function (e) {
+    // If the checkbox is checked, emit the player ready event
     if (e.target.checked) {
         console.log('Ready checkbox checked. Emitting player ready event.');
         socket.emit('player ready', roomCode);
     };
+    // If the checkbox is unchecked, emit the player not ready event
     if (e.target.checked === false) {
         console.log('Ready checkbox unchecked. Emitting player not ready event.');
         socket.emit('player not ready', roomCode);
     };
 });
 
+// Add an event listener for the all players ready event
 socket.on('all players ready', function () {
     console.log('Received all players ready event. Enabling start game button.');
+    // Enable the start game button
     document.getElementById('start-game-button').disabled = false;
 });
 
+// Add an event listener for the not all players ready event
 socket.on('not all players ready', function () {
     let startGameButton = document.getElementById('start-game-button');
+    // If the start game button is not disabled, disable it
     if (!startGameButton.disabled) {
         startGameButton.disabled = true;
     }
 });
 
+// Add an event listener for the game started event
 socket.on('game started', function () {
+    // Disable the ready checkbox
     document.getElementById('ready-checkbox').disabled = true;
 
-    // Disable the start game button
+    // Disable the start game button and enable the step game button
     const startGameButton = document.getElementById('start-game-button');
     const stepGameButton = document.getElementById('step-game-button');
     if (startGameButton) {
@@ -335,6 +352,7 @@ socket.on('game started', function () {
     };
 });
 
+// Function to start the game on the client side
 function startGameClient() {
     const room = sessionStorage.getItem('roomCode');
     // Disable the start game button
@@ -343,6 +361,7 @@ function startGameClient() {
         startGameButton.disabled = true;
     };
 
+    // Emit the gameStart event
     socket.emit('gameStart', room, function (error, response) {
         console.log('does this even run?');
         if (error) {
@@ -351,21 +370,28 @@ function startGameClient() {
             console.log('Game started');
         };
     });
+    // Step the game client 8 times
     for (let i = 0; i < 8; i++) {
         stepGameClient();
     };
 };
+
+// Variable to hold whether the game is stopped
 let gameStopped = false;
 
+// Function to draw flipped pogs
 function drawFlippedPogs() {
+    // Loop through each pog
     for (let i = 0; i < Pucks.length; i++) {
         let pog = gameData.game.Pucks[i];
+        // If the pog is flipped up, draw it and stop the game
         if (pog.side === 'up') {
             ctx.drawImage(whiteSide, 100, 100, 100, 100);
             gameStopped = true;
         }
     }
 
+    // If the game is stopped, prompt the player to pick a pog and return the flipped pogs to the pile
     if (gameStopped) {
         let pickedPog = promptPlayerToPickPog();
         returnFlippedPogsToPile(pickedPog);
@@ -373,6 +399,7 @@ function drawFlippedPogs() {
     }
 }
 
+// Function to prompt the player to pick a pog
 function promptPlayerToPickPog() {
     // Find the flipped pogs
     let flippedPogs = gameData.game.arena.filter(pog => pog.side === 'up');
@@ -390,14 +417,18 @@ function promptPlayerToPickPog() {
     return pickedPog;
 }
 
+// Function to return the flipped pogs to the pile
 function returnFlippedPogsToPile(pickedPog) {
     // Implement the logic to return the flipped pogs to the pile
     // Exclude the picked pog
 }
+
+// Function to step the game on the client side
 function stepGameClient() { // pass the room as a parameter
     const room = sessionStorage.getItem('roomCode');
     // Check that the socket is connected
     console.log(`Socket connected: ${socket.connected}`);
+    // Emit the step-game event
     socket.emit('step-game', room, function (error, response) {
         console.log('socket emitted');
         if (error) {
@@ -412,6 +443,7 @@ function stepGameClient() { // pass the room as a parameter
     console.log(`Room: ${room}`);
 };
 
+// Add an event listener for the step-game-success event
 socket.on('step-game-success', (data, gameData) => {
     console.log('Data:', data);
     console.log('custom test success');
@@ -444,7 +476,6 @@ socket.on('step-game-success', (data, gameData) => {
         };
     };
     updateStepGameButton();
-
 
     function step() {
         switch (gameData.game.stage) {
@@ -552,10 +583,6 @@ socket.on('step-game-success', (data, gameData) => {
 
 
 
-
-                _________________________________________________________________________________
-                // sergio working on issue #117
-
                 function drawFlippedPogs() {
                     // This loop goes through each pog in the Pucks array
                     for (let i = 0; i < Pucks.length; i++) {
@@ -596,32 +623,40 @@ socket.on('step-game-success', (data, gameData) => {
                     }
                 }
 
-                __________________________________
-                // Sergio testing resolving #101
+                // Initialize the Y position for the log messages on the canvas
+                let logY = 300;
 
-
-                let logY = 300; // Y position for the log messages on the canvas
+                // Get the textarea elements for the collected pogs of player 1 and player 2
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
 
+                // Draw an image on the canvas
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
+
+                // Log messages for debugging
                 console.log('Testing for loop 3');
                 console.log(gameData.game.arena.length);
+
+                // Loop through each pog in the arena
                 for (let i = 0; i < gameData.game.arena.length; i++) {
                     let pog = gameData.game.arena[i];
 
+                    // Add the name of the taken pog to the textarea for player 1
                     collectedPogsPlayer1.value += "Pog Taken: " + pog.name + '\n';
 
-                    // Display the message on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + pog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
+
                 // Function to add a pog to a player's inventory
                 function addToInventory(player, pog) {
-                    // Check if the player has an inventory property
+                    // Check if the player has an inventory property, if not, initialize it as an empty array
                     if (!player.inventory) {
                         player.inventory = [];
                     }
@@ -632,31 +667,27 @@ socket.on('step-game-success', (data, gameData) => {
 
                 // Function to select a pog
                 function selectPog(player, pogIndex) {
-                    // Remove the pog from the arena
+                    // Remove the pog from the arena and store it in selectedPog
                     let selectedPog = gameData.game.arena.splice(pogIndex, 1)[0];
 
-                    // Add the pog to the player's inventory
+                    // Add the selected pog to the player's inventory
                     addToInventory(player, selectedPog);
 
-                    // Update the textarea for the player
+                    // Determine which player's textarea to update based on the player parameter
                     let collectedPogs = player === player1 ? collectedPogsPlayer1 : collectedPogsPlayer2;
+                    // Update the textarea for the player with the name of the taken pog
                     collectedPogs.value += "Pog Taken: " + selectedPog.name + '\n';
 
-                    // Display the selected pog on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + selectedPog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
 
-                // Use the function to add a pog to a player's inventory
-                // Replace 'player' with the actual player object and 'pog' with the actual pog object
-                // addToInventory(player, pog);
-
-                // Use the function to select a pog for a player
-                // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
-                // selectPog(player, selectedPogIndex);
                 break;
             case 1:// Knockout
                 console.log('case 1 test');

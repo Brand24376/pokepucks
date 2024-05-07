@@ -428,6 +428,11 @@ io.on('connection', socket => {
                 };
 
                 // Initialize the game 
+
+                // this creates a const pucks array to store all the pucks in the game. 
+                // Each puck has a name, ids, type, subtype, found, img, description, and se (special effects) object.
+                // Not all pucks have all of these properties, but they are all included in the array for consistency. Some pucks were not created through only pogs, so some pucks do not have ids. 
+
                 const Pucks = [
                     {
                         name: "You",
@@ -1006,7 +1011,7 @@ io.on('connection', socket => {
                         found: "discovery",
                         img: "",
                         description: "",
-                        
+
                         se: {
                             adventure: [],
                             battle: [{
@@ -1269,6 +1274,7 @@ io.on('connection', socket => {
                                 console.log('Arena:', this.arena.hp);
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
+                                
                                 //The current player makes an attack, then the other player makes an attack. Repeat until all attacks have been made. 
                                 //If a player has flipped over pogs in the arena, pick them up and place it in prize, the rest that have been knocked
                                 // over are placed back into the arena.
