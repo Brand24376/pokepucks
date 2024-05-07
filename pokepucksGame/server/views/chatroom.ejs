@@ -25,16 +25,21 @@ The ejs file for the chatroom.
 
 <body>
     <main>
+
+        <!-- user list -->
         <div class="user">
             <p class="user-list"></p>
         </div>
+
+        <!-- Chat Chat -->
         <div class="welcome">
             <ul class="chat-display"></ul>
         </div>
-        <div class="leaveButton" id="chatroom-page">
+        <div class="message" id="chatroom-page">
 
             <p class="activity"></p>
 
+            <!-- what you right sent to chat room -->
             <form class="form-msg">
                 <input type="text" id="message" placeholder="Your message" required>
                 <button type="submit">Send</button>
@@ -57,6 +62,7 @@ The ejs file for the chatroom.
 
         </div>
 
+        <!-- leave/step/start game -->
         <div class="strste">
             <button onclick="leaveRoom()">Leave Room</button>
             <button id="step-game-button" disabled="true" onclick="stepGameClient()">Step Game</button>
@@ -66,7 +72,6 @@ The ejs file for the chatroom.
             <input type="checkbox" id="ready-checkbox">
             <p id="readyCount">People Ready: 0/0</p>
         </div>
-
 
         <!-- this creates ids for the player's inventory.  -->
         <textarea id="CollectedPogsPlayer1" rows="3" cols="5" style="overflow:auto;" 
@@ -80,7 +85,7 @@ The ejs file for the chatroom.
         <div class="music"><button onclick="play()">music</button></div>
 
         
-
+        <!-- Music -->
         <script>
             function play() {
                 var audio = new Audio('music/intro.mp3')
