@@ -55,7 +55,7 @@ const IP_ADDRESS = getLocalIP();
 const PORT = process.env.PORT || 3000;
 
 // Constants for the OAuth and redirect URLs
-const AUTH_URL = `http://172.16.3.162:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
+const AUTH_URL = `http://172.16.3.116:420/oauth`; // `http://ipAddressOfFormbarInstance:port/oauth`;
 const THIS_URL = `http://${IP_ADDRESS}:${PORT}/login`; // `http://ipAddressOfThisServer:port/login`;
 const GAME_URL = `http://${IP_ADDRESS}:${PORT}/`; // `http://ipAddressOfThisServer:port/`;
 
@@ -376,7 +376,7 @@ io.on('connection', socket => {
                  * 
                  * 
                  * Future Plans:
-                 * -Have a unique way of allowing the players to throw their slammers at the stack of pucks.
+                 * -Finish the part of the game where the player can pick one puck from the arena they flipped and placed the rest back in the stack.
                  * -Have special abilities for slammers.
                  * -Have special abilities for pucks.
                  * -Show the custom pogs in canvas.
@@ -390,6 +390,10 @@ io.on('connection', socket => {
                 var turn;
 
                 class Player {
+                    // This is the player class
+                    // This class is used to create the players that play the game
+                    // The players have a name, health stack, power stack, prize stack, and a slammer
+
                     constructor(hp, power, prize, attack, slammer) {
                         this.hp = hp;
                         this.power = power;
@@ -400,6 +404,12 @@ io.on('connection', socket => {
                 };
 
                 class Puck {
+                    // This is the puck class
+                    // This class is used to create the pucks that are thrown in the game
+                    // The pucks have a name, weight, and side
+                    // The pucks are flipped to determine if they hit or miss
+                    // The pucks have a power that is determined by the weight and a random number
+                    // The pucks are used to determine the outcome of the game and are used for health, attacks, and prizes
                     constructor(name, weight, side) {
                         this.name = name;
                         this.weight = 1;
@@ -417,8 +427,11 @@ io.on('connection', socket => {
                 };
 
                 // Initialize the game 
+                
                 const Pucks = [
                     {
+                    
+
                         name: "You",
                         ids: [],
                         type: "Trainer",
@@ -1027,6 +1040,10 @@ io.on('connection', socket => {
                
 
                 class Slammer {
+                    // This is the class for the slammers.
+                    // Slammers are used to attack the pogs in the arena.
+                    // The slammers have a name, weight, and side.
+
                     constructor(name, side) {
                         this.name = name;
                         this.weight = 1;
@@ -1034,7 +1051,11 @@ io.on('connection', socket => {
                     };
 
                     attack() {
-                        // attack
+                        // This is where the attack method is defined.
+                        // The attack method is used to determine the power of the attack.
+                        // The power of the attack is determined by a random number between 1 and 100.
+                        // The weight of the slammer is added to the power of the attack.
+                        // If the power of the attack is greater than 100, the power of the attack is set to 100
                         let att;
                         att = Math.floor(Math.random() * 100)
                         if (att > 100) {
@@ -1392,7 +1413,7 @@ io.on('connection', socket => {
 
                                 this.phase++;
 
-
+                                this.arena.pop()
                                 break;
                             case 5://Check for winner
                                 /*********************************
