@@ -307,7 +307,7 @@ label[for="ready-checkbox"] {
 
 }
 
-
+/* Inventory for player 1 */
 #CollectedPogsPlayer1 {
     position: absolute;
     top: 10;
@@ -329,6 +329,8 @@ label[for="ready-checkbox"] {
 
 }
 
+
+/* inventory for player 2 */
 #CollectedPogsPlayer2 {
     position: absolute;
     top: 10px;

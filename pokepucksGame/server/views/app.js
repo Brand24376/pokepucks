@@ -339,6 +339,7 @@ document.getElementById('ready-checkbox').addEventListener('change', function (e
         // Emit the player ready event
         socket.emit('player ready', roomCode);
     };
+
     // If the checkbox is not checked
     if (e.target.checked === false) {
         console.log('Ready checkbox unchecked. Emitting player not ready event.');
@@ -347,6 +348,7 @@ document.getElementById('ready-checkbox').addEventListener('change', function (e
         socket.emit('player not ready', roomCode);
     };
 });
+
 
 // Listen for all players ready event
 socket.on('all players ready', function () {
@@ -360,7 +362,7 @@ socket.on('all players ready', function () {
 socket.on('not all players ready', function () {
     // Get the start game button
     let startGameButton = document.getElementById('start-game-button');
-
+  
     // If the start game button is not disabled
     if (!startGameButton.disabled) {
         // Disable the start game button
@@ -394,7 +396,7 @@ function startGameClient() {
         startGameButton.disabled = true; // Disable the start game button
     };
 
-    // Emit the game start event
+    // Emit the gameStart event
     socket.emit('gameStart', room, function (error, response) {
         console.log('does this even run?');
         if (error) { // If there is an error
@@ -414,13 +416,16 @@ let gameStopped = false; // Define the game stopped variable
 
 // Function used to draw the flipped pogs
 function drawFlippedPogs() {
+    // Loop through each pog
     for (let i = 0; i < Pucks.length; i++) {
         let pog = gameData.game.Pucks[i];
+        // If the pog is flipped up, draw it and stop the game
         if (pog.side === 'up') {
             ctx.drawImage(whiteSide, 100, 100, 100, 100);
             gameStopped = true;
         };
     };
+// If the game is stopped, prompt the player to pick a pog and return the flipped pogs to the pile
     if (gameStopped) {
         let pickedPog = promptPlayerToPickPog();
         returnFlippedPogsToPile(pickedPog);
@@ -446,11 +451,11 @@ function promptPlayerToPickPog() {
     return pickedPog;
 };
 
-// Function used to return the flipped pogs to the pile
+// Function to return the flipped pogs to the pile
 function returnFlippedPogsToPile(pickedPog) {
     // Implement the logic to return the flipped pogs to the pile
     // Exclude the picked pog
-};
+}
 
 // Function used to step through the game   
 function stepGameClient() { // pass the room as a parameter
@@ -459,7 +464,7 @@ function stepGameClient() { // pass the room as a parameter
     // Check that the socket is connected
     console.log(`Socket connected: ${socket.connected}`);
 
-    // Emit the step game event
+    // Emit the step-game event
     socket.emit('step-game', room, function (error, response) {
         console.log('socket emitted');
         if (error) { // If there is an error
@@ -653,28 +658,38 @@ socket.on('step-game-success', (data, gameData) => { // pass the data and gameDa
                     }
                 }
 
+                // Get the textarea elements for the collected pogs of player 1 and player 2
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
 
+                // Draw an image on the canvas
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
+
+                // Log messages for debugging
                 console.log('Testing for loop 3');
                 console.log(gameData.game.arena.length);
+
+                // Loop through each pog in the arena
                 for (let i = 0; i < gameData.game.arena.length; i++) {
                     let pog = gameData.game.arena[i];
 
+                    // Add the name of the taken pog to the textarea for player 1
                     collectedPogsPlayer1.value += "Pog Taken: " + pog.name + '\n';
 
-                    // Display the message on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + pog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
+
                 // Function to add a pog to a player's inventory
                 function addToInventory(player, pog) {
-                    // Check if the player has an inventory property
+                    // Check if the player has an inventory property, if not, initialize it as an empty array
                     if (!player.inventory) {
                         player.inventory = [];
                     }
@@ -685,31 +700,27 @@ socket.on('step-game-success', (data, gameData) => { // pass the data and gameDa
 
                 // Function to select a pog
                 function selectPog(player, pogIndex) {
-                    // Remove the pog from the arena
+                    // Remove the pog from the arena and store it in selectedPog
                     let selectedPog = gameData.game.arena.splice(pogIndex, 1)[0];
 
-                    // Add the pog to the player's inventory
+                    // Add the selected pog to the player's inventory
                     addToInventory(player, selectedPog);
 
-                    // Update the textarea for the player
+                    // Determine which player's textarea to update based on the player parameter
                     let collectedPogs = player === player1 ? collectedPogsPlayer1 : collectedPogsPlayer2;
+                    // Update the textarea for the player with the name of the taken pog
                     collectedPogs.value += "Pog Taken: " + selectedPog.name + '\n';
 
-                    // Display the selected pog on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + selectedPog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
 
-                // Use the function to add a pog to a player's inventory
-                // Replace 'player' with the actual player object and 'pog' with the actual pog object
-                // addToInventory(player, pog);
-
-                // Use the function to select a pog for a player
-                // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
-                // selectPog(player, selectedPogIndex);
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
