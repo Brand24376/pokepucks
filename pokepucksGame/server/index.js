@@ -9,6 +9,7 @@ Code for the backend server-side for the PokePucks game.
 /*
 // A list for all the required node modules to install or just use npm i by itself to install all of them since they are all listed in the package.json file
 // Make sure terminal is in the server folder
+// Only way I know to update a node module right now is to run the command to install it again and that updates it to the latest version. If you find a better way to update the node modules, replace this line with the command to do so and make sure to state that it's for updating the node modules.
 npm i socket.io
 npm i express
 npm i jsonwebtoken
@@ -19,6 +20,14 @@ npm i -D nodemon (Not required but makes editing this file much more convenient.
 // Start the server by using 'npm start' while in the server folder
 // Start the server for testing by using 'npm run dev' while in the server folder
 // Remember to change the ip address for your formbar instance in the AUTH_URL variable
+
+// Helpful hotkeys if using VSCode:
+ALT + SHIFT + F to format the code
+CTRL + / to comment out a line or block of code (you can also uncomment by selecting the code and pressing the same hotkey)
+ALT + Z to wrap text (makes it so you don't have to scroll horizontally to read the code)
+ALT + UP/DOWN to move a line of code up or down
+ALT + SHIFT + UP/DOWN to copy a line of code up or down
+ALT + CLICK to select multiple lines of code to edit them all at once
 */
 
 // Importing the required modules
@@ -428,6 +437,11 @@ io.on('connection', socket => {
                 };
 
                 // Initialize the game 
+
+                // this creates a const pucks array to store all the pucks in the game. 
+                // Each puck has a name, ids, type, subtype, found, img, description, and se (special effects) object.
+                // Not all pucks have all of these properties, but they are all included in the array for consistency. Some pucks were not created through only pogs, so some pucks do not have ids. 
+
                 const Pucks = [
                     {
                         name: "You",
@@ -1006,7 +1020,7 @@ io.on('connection', socket => {
                         found: "discovery",
                         img: "",
                         description: "",
-                        
+
                         se: {
                             adventure: [],
                             battle: [{
@@ -1269,6 +1283,7 @@ io.on('connection', socket => {
                                 console.log('Arena:', this.arena.hp);
                                 console.log(this.players[0].Slammer.side);
                                 console.log(this.players[1].Slammer.side);
+                                
                                 //The current player makes an attack, then the other player makes an attack. Repeat until all attacks have been made. 
                                 //If a player has flipped over pogs in the arena, pick them up and place it in prize, the rest that have been knocked
                                 // over are placed back into the arena.
@@ -1574,9 +1589,9 @@ io.on('connection', socket => {
         };
 
         // After a player becomes ready...
-        let readyCount = readyPlayers.get(room).length;
-        let totalCount = getUsersInRoom(room).length;
-        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+        let readyCount = readyPlayers.get(room).length; // Get the number of ready players in the room
+        let totalCount = getUsersInRoom(room).length; // Get the total number of users in the room
+        io.to(room).emit('playerCountChange', { readyCount, totalCount }); // Emit the player count change to the room
     });
 
     // When player is not ready
@@ -1596,9 +1611,9 @@ io.on('connection', socket => {
         console.log(`Player ${socket.id} is not ready in room ${room}. Total ready players: ${readyPlayers.get(room).length}`);
 
         // After a player becomes not ready...
-        let readyCount = readyPlayers.get(room).length;
-        let totalCount = getUsersInRoom(room).length;
-        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+        let readyCount = readyPlayers.get(room).length; // Get the number of ready players in the room
+        let totalCount = getUsersInRoom(room).length; // Get the total number of users in the room
+        io.to(room).emit('playerCountChange', { readyCount, totalCount }); // Emit the player count change to the room
 
         // If not all players are ready, emit 'not all players ready' event
         if (readyCount < totalCount) {
@@ -1671,10 +1686,10 @@ io.on('connection', socket => {
         };
 
         // After a user leaves the room...
-        let room = user.room;
-        let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
-        let totalCount = getUsersInRoom(room).length;
-        io.to(room).emit('playerCountChange', { readyCount, totalCount });
+        let room = user.room; // Get the user's room
+        let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0; // Get the number of ready players in the room
+        let totalCount = getUsersInRoom(room).length; // Get the total number of users in the room
+        io.to(room).emit('playerCountChange', { readyCount, totalCount }); // Emit the player count change to the room
 
         console.log(`User ${socket.id} disconnected`);
     });
@@ -1737,10 +1752,10 @@ io.on('connection', socket => {
             });
 
             // After a user leaves the room...
-            let room = user.room;
-            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0;
-            let totalCount = getUsersInRoom(room).length;
-            io.to(room).emit('playerCountChange', { readyCount, totalCount });
+            let room = user.room; // Get the user's room
+            let readyCount = readyPlayers.has(room) ? readyPlayers.get(room).length : 0; // Get the number of ready players in the room
+            let totalCount = getUsersInRoom(room).length; // Get the total number of users in the room
+            io.to(room).emit('playerCountChange', { readyCount, totalCount }); // Emit the player count change to the room
         };
 
         console.log(`User ${socket.id} disconnected`);

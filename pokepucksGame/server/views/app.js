@@ -184,9 +184,13 @@ window.addEventListener('load', () => {
     // Check if the page is the login page
     if (window.location.href === CHATROOM_URL) {
         console.log('Chatroom page loaded');
+
+        // Query Selector for submitting the message
         document.querySelector('.form-msg').addEventListener('submit', sendMessage);
 
+        // Checks if the user is typing
         msgInput.addEventListener('keypress', () => {
+            // Emit the activity event
             socket.emit('activity', username);
         });
 
@@ -196,18 +200,19 @@ window.addEventListener('load', () => {
         privacy = sessionStorage.getItem('privacy');
         method = sessionStorage.getItem('method');
 
+        // Check the method
         switch (method) {
-            case 'create':
+            case 'create': // If the method is create, create the room
                 console.log('Create method');
                 enterRoomCreate();
                 sessionStorage.setItem('method', 'join');
                 break;
-            case 'join':
+            case 'join': // If the method is join, join the room
                 console.log('Join method');
                 enterRoomJoin();
                 sessionStorage.setItem('method', 'join');
                 break;
-            default:
+            default: // If there is no method, log an error
                 console.log('Error: No method given');
         };
     };
@@ -216,43 +221,55 @@ console.log('Setting window.onload done');
 
 // Function used for when a user leaves a chatroom
 function leaveRoom() {
+    // Emit 'leaveRoom' event
     socket.emit('leaveRoom');
+
+    // Not sure if the code below does anything but im keeping it in case it does
     socket.on('leaveRoomConfirmation', () => {
     });
 
+    // Redirect to the lobby page
     window.location.href = LOBBY_URL;
 };
 
 // Listen for messages
 socket.on('message', (data) => {
+    // Check if the page is the chatroom page
     if (window.location.href === CHATROOM_URL) {
+
+        // Define variables
         activity.textContent = "";
         const { name, text, id, time } = data;
 
-        const li = document.createElement('li');
-        li.className = 'post';
-        if (id === socket.id) li.className = 'post post--left';
-        if (id !== socket.id && name !== 'YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD') li.className = 'post post--right';
-        if (name !== 'YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD') {
-            li.innerHTML = `<div class="post__header ${id === socket.id
-                ? 'post__header--user'
-                : 'post__header--reply'
+        // Code for creating the message in the chat html and formatting it
+        const li = document.createElement('li'); // Create a new list item
+        li.className = 'post'; // Set the class name of the list item to 'post'
+        if (id === socket.id) li.className = 'post post--left'; // If the id is the same as the socket id, set the class name to 'post post--left'
+        if (id !== socket.id && name !== 'YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD') li.className = 'post post--right'; // If the id is not the same as the socket id and the name is not the same as the default name, set the class name to 'post post--right'
+        if (name !== 'YrXoETWEMg5_jKLdAAADtkKSWJqh33L2lrcXAAABWbFLr2OR7EHk719MAAABxkXxW0_R2EuZ7XVXAAAD') { // If the name is not the same as the default name
+            li.innerHTML = `<div class="post__header ${id === socket.id // Set the inner html of the list item to the following
+                ? 'post__header--user' // If the id is the same as the socket id, set the class name to 'post__header--user'
+                : 'post__header--reply' // If the id is not the same as the socket id, set the class name to 'post__header--reply'
                 }">
                     <span class="post__header--name">${name}</span>
                     <span class="post__header--time">${time}</span>
                     </div>
                     <div class="post__text">${text}</div>`
-        } else {
+        } else { // If the name is the same as the default name
             li.innerHTML = `<div class ="post__text">${text}</div>`
         };
+        // Append the list item to the chat display
         document.querySelector('.chat-display').appendChild(li);
 
+        // Scroll to the bottom of the chat display
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
     };
 });
 
-let activityTimer;
+let activityTimer; // Define the activity timer
+// Listen for activity
 socket.on('activity', (name) => {
+    // Set the activity text content to the name of the user and that they are typing
     activity.textContent = `${name} is typing...`
 
     // Clear after 3 seconds
@@ -262,167 +279,217 @@ socket.on('activity', (name) => {
     }, 3000);
 });
 
+// Function used to show the users in the chatroom
 function showUsers(users) {
+    // Set the text content of the users list to nothing
     usersList.textContent = '';
+
+    // If there are users
     if (users) {
-        usersList.innerHTML = `<em>Users in ${roomCode}:</em>`;
-        users.forEach((user, i) => {
-            usersList.textContent += ` ${user.name}`;
-            if (users.length > 1 && i !== users.length - 1) {
-                usersList.textContent += ",";
+        // Set the inner html of the users list to the following
+        usersList.innerHTML = `<em>Users in ${roomCode}:</em>`; // Set the text to 'Users in roomCode'
+        users.forEach((user, i) => { // For each user
+            usersList.textContent += ` ${user.name}`; // Set the text content of the users list to the name of the user
+            if (users.length > 1 && i !== users.length - 1) { // If there is more than one user and the index is not the same as the length of the users list - 1
+                usersList.textContent += ","; // Set the text content of the users list to ','
             };
         });
     };
 };
 
+// Listen for user list event
 socket.on('userList', ({ users }) => {
+    // Run the showUsers function with the users
     showUsers(users);
 });
 
+// Listen for room full event
 socket.on('joinedRoomFull', () => {
     alert('The room you tried to join is full.');
+
+    // Redirect to the lobby page
     window.location.href = LOBBY_URL;
 });
 
+// Listen for room not found event
 socket.on('joinedRoomNotFound', () => {
     alert('The room you tried to join does not exist.');
+
+    // Redirect to the lobby page
     window.location.href = LOBBY_URL;
 });
 
 // PokePucks Game Code
-var blackSide = document.getElementById('blackSide');
-var whiteSide = document.getElementById('whiteSide');
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-ctx.font = '20px Arial';
-document.getElementById('canvas').width = window.innerWidth;
-document.getElementById('canvas').height = window.innerHeight;
-ctx.fillStyle = 'silver';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+var blackSide = document.getElementById('blackSide'); // Get the black side of the pog
+var whiteSide = document.getElementById('whiteSide'); // Get the white side of the pog
+var canvas = document.getElementById('canvas'); // Get the canvas
+var ctx = canvas.getContext('2d'); // Get the context of the canvas
+ctx.font = '20px Arial'; // Set the font of the context
+document.getElementById('canvas').width = window.innerWidth; // Set the width of the canvas to the window inner width
+document.getElementById('canvas').height = window.innerHeight; // Set the height of the canvas to the window inner height
+ctx.fillStyle = 'silver'; // Set the fill style of the context to silver
+ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the rectangle of the context
 
+// Get the ready checkbox and listen for the change event
 document.getElementById('ready-checkbox').addEventListener('change', function (e) {
+    // If the checkbox is checked
     if (e.target.checked) {
         console.log('Ready checkbox checked. Emitting player ready event.');
+
+        // Emit the player ready event
         socket.emit('player ready', roomCode);
     };
+
+    // If the checkbox is not checked
     if (e.target.checked === false) {
         console.log('Ready checkbox unchecked. Emitting player not ready event.');
+
+        // Emit the player not ready event
         socket.emit('player not ready', roomCode);
     };
 });
 
+
+// Listen for all players ready event
 socket.on('all players ready', function () {
     console.log('Received all players ready event. Enabling start game button.');
+
+    // Enable the start game button
     document.getElementById('start-game-button').disabled = false;
 });
 
+// Listen for not all players ready event
 socket.on('not all players ready', function () {
+    // Get the start game button
     let startGameButton = document.getElementById('start-game-button');
+  
+    // If the start game button is not disabled
     if (!startGameButton.disabled) {
+        // Disable the start game button
         startGameButton.disabled = true;
     }
 });
 
+// Listen for game started event
 socket.on('game started', function () {
+    // Disable the ready checkbox
     document.getElementById('ready-checkbox').disabled = true;
 
-    // Disable the start game button
-    const startGameButton = document.getElementById('start-game-button');
-    const stepGameButton = document.getElementById('step-game-button');
+    const startGameButton = document.getElementById('start-game-button'); // Get the start game button
+    const stepGameButton = document.getElementById('step-game-button'); // Get the step game button
+
+    // If the start game button exists
     if (startGameButton) {
-        startGameButton.disabled = true;
-        stepGameButton.disabled = false;
+        startGameButton.disabled = true; // Disable the start game button
+        stepGameButton.disabled = false; // Enable the step game button
     };
 });
 
+// Function used to start the game
 function startGameClient() {
-    const room = sessionStorage.getItem('roomCode');
-    // Disable the start game button
-    const startGameButton = document.getElementById('start-game-button');
+    const room = sessionStorage.getItem('roomCode'); // Get the room code from the session storage
+
+    const startGameButton = document.getElementById('start-game-button'); // Get the start game button
+
+    // If the start game button exists
     if (startGameButton) {
-        startGameButton.disabled = true;
+        startGameButton.disabled = true; // Disable the start game button
     };
 
+    // Emit the gameStart event
     socket.emit('gameStart', room, function (error, response) {
         console.log('does this even run?');
-        if (error) {
-            console.error(`Error: ${error}`);
-        } else {
-            console.log('Game started');
+        if (error) { // If there is an error
+            console.error(`Error: ${error}`); // Log the error
+        } else { // If there is no error
+            console.log('Game started'); // Log that the game has started
         };
     });
+
+    // This for loop is used with step game to immediately step the game 8 times. This goes through the setup phase of the game so you can immediately start at the loop phase. If there is gameplay added to the setup phase, this is the code you need to modify.
     for (let i = 0; i < 8; i++) {
         stepGameClient();
     };
 };
-let gameStopped = false;
 
+let gameStopped = false; // Define the game stopped variable
+
+// Function used to draw the flipped pogs
 function drawFlippedPogs() {
-    for(let i = 0; i < Pucks.length; i++) {
+    // Loop through each pog
+    for (let i = 0; i < Pucks.length; i++) {
         let pog = gameData.game.Pucks[i];
-        if(pog.side === 'up') {
-            ctx.drawImage(whiteSide, 100,100,100,100);
+        // If the pog is flipped up, draw it and stop the game
+        if (pog.side === 'up') {
+            ctx.drawImage(whiteSide, 100, 100, 100, 100);
             gameStopped = true;
-        }
-    }
-
-    if(gameStopped) {
+        };
+    };
+// If the game is stopped, prompt the player to pick a pog and return the flipped pogs to the pile
+    if (gameStopped) {
         let pickedPog = promptPlayerToPickPog();
         returnFlippedPogsToPile(pickedPog);
         gameStopped = false;
-    }
-}
+    };
+};
 
+// Function used to prompt the player to pick a pog
 function promptPlayerToPickPog() {
     // Find the flipped pogs
-    let flippedPogs =  gameData.game.arena.filter(pog => pog.side === 'up');
+    let flippedPogs = gameData.game.arena.filter(pog => pog.side === 'up');
 
     // Display the flipped pogs to the player
     let message = "Flipped pogs:\n";
-    for(let i = 0; i < flippedPogs.length; i++) {
+    for (let i = 0; i < flippedPogs.length; i++) {
         message += `ID: ${flippedPogs[i].id}, Name: ${flippedPogs[i].name}\n`;
-    }
+    };
     alert(message);
 
     // Prompt the player to pick a pog
     let pogId = prompt("Please enter the ID of the pog you want to pick:");
     let pickedPog = gameData.game.arena.filter(pog => pog.id === pogId);
     return pickedPog;
-}
+};
 
+// Function to return the flipped pogs to the pile
 function returnFlippedPogsToPile(pickedPog) {
     // Implement the logic to return the flipped pogs to the pile
     // Exclude the picked pog
 }
+
+// Function used to step through the game   
 function stepGameClient() { // pass the room as a parameter
-    const room = sessionStorage.getItem('roomCode');
+    const room = sessionStorage.getItem('roomCode'); // Get the room code from the session storage
+
     // Check that the socket is connected
     console.log(`Socket connected: ${socket.connected}`);
+
+    // Emit the step-game event
     socket.emit('step-game', room, function (error, response) {
         console.log('socket emitted');
-        if (error) {
-            console.error(`Error: ${error}`);
-        } else if (response.status === 'error') {
-            console.error(`Error: ${response.message}`);
-        } else {
-            console.log(`Step game success for room: ${room}`);
+        if (error) { // If there is an error
+            console.error(`Error: ${error}`); // Log the error
+        } else if (response.status === 'error') { // If there is an error in the response
+            console.error(`Error: ${response.message}`); // Log the error message
+        } else { // If there is no error
+            console.log(`Step game success for room: ${room}`); // Log that the step game was successful
             console.log(response.gameData); // log the game data received from the server
         };
     });
     console.log(`Room: ${room}`);
 };
 
-socket.on('step-game-success', (data, gameData) => {
+// Listen for step game success event
+socket.on('step-game-success', (data, gameData) => { // pass the data and gameData as parameters
     console.log('Data:', data);
     console.log('custom test success');
     console.log('Game Data:', gameData);
 
-    // Gets the current player
-    let currentPlayer;
+    let currentPlayer; // Define the current player
     try { // Try to get the current player
-        currentPlayer = gameData.usersInRoom[gameData.game.turn].name;
+        currentPlayer = gameData.usersInRoom[gameData.game.turn].name; // Set the current player to the name of the user in the room at the current game turn
     } catch (error) { // If there is an error
-        console.error('Invalid turn index:', gameData.game.turn);
+        console.error('Invalid turn index:', gameData.game.turn); // Log the error
 
         // Handle the error appropriately, e.g., by setting currentPlayer to a default value
         currentPlayer = null;
@@ -445,6 +512,7 @@ socket.on('step-game-success', (data, gameData) => {
     };
     updateStepGameButton();
 
+    // Function to update the game stage based on the game data
     function step() {
         switch (gameData.game.stage) {
             case 'setup':
@@ -461,6 +529,7 @@ socket.on('step-game-success', (data, gameData) => {
         };
     };
 
+    // Function for setup stage
     function stage_setup() {
         switch (gameData.game.phase) {
             case 0: // Decide players
@@ -501,6 +570,7 @@ socket.on('step-game-success', (data, gameData) => {
         };
     };
 
+    // Function for loop stage
     function stage_loop() {
         switch (gameData.game.phase) {
             case 0: // Top off
@@ -548,28 +618,78 @@ socket.on('step-game-success', (data, gameData) => {
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
 
+                function drawFlippedPogs() {
+                    // This loop goes through each pog in the Pucks array
+                    for (let i = 0; i < Pucks.length; i++) {
+                        let pog = gameData.game.Pucks[i];
+                        // If the pog's side is 'up', it draws the pog on the canvas and sets gameStopped to true
+                        if (pog.side === 'up') {
+                            ctx.drawImage(whiteSide, 100, 100, 100, 100);
+                            gameStopped = true;
+                        }
+                    }
+
+                    // If gameStopped is true (meaning a pog was flipped up), it executes the following code
+                    if (gameStopped) {
+                        // Disables the step game button to pause the game
+                        const stepGameButton = document.getElementById('step-game-button');
+                        stepGameButton.disabled = true;
+
+                        // Prompts the player to pick a pog and returns the picked pog
+                        let pickedPog = promptPlayerToPickPog();
+                        // Returns the flipped pogs to the pile, excluding the picked pog
+                        returnFlippedPogsToPile(pickedPog);
+
+                        // Determines the winning player based on the current turn and adds the picked pog to the winning player's inventory
+                        let winningPlayer = gameData.game.turn === 0 ? gameData.game.players[1] : gameData.game.players[0];
+                        addToInventory(winningPlayer, pickedPog);
+
+                        // Finds the index of the picked pog in the Pucks array and removes it from the array
+                        let pogIndex = gameData.game.Pucks.findIndex(pog => pog.id === pickedPog.id);
+                        if (pogIndex !== -1) {
+                            gameData.game.Pucks.splice(pogIndex, 1);
+                        }
+
+                        // Sets gameStopped to false to indicate that no pogs are flipped up
+                        gameStopped = false;
+
+                        // Enables the step game button to resume the game
+                        stepGameButton.disabled = false;
+                    }
+                }
+
+                // Get the textarea elements for the collected pogs of player 1 and player 2
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
 
+                // Draw an image on the canvas
                 ctx.drawImage(document.getElementById('blackSide'), 2000, 80, 100, 100);
+
+                // Log messages for debugging
                 console.log('Testing for loop 3');
                 console.log(gameData.game.arena.length);
+
+                // Loop through each pog in the arena
                 for (let i = 0; i < gameData.game.arena.length; i++) {
                     let pog = gameData.game.arena[i];
 
+                    // Add the name of the taken pog to the textarea for player 1
                     collectedPogsPlayer1.value += "Pog Taken: " + pog.name + '\n';
 
-                    // Display the message on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + pog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
+
                 // Function to add a pog to a player's inventory
                 function addToInventory(player, pog) {
-                    // Check if the player has an inventory property
+                    // Check if the player has an inventory property, if not, initialize it as an empty array
                     if (!player.inventory) {
                         player.inventory = [];
                     }
@@ -580,31 +700,27 @@ socket.on('step-game-success', (data, gameData) => {
 
                 // Function to select a pog
                 function selectPog(player, pogIndex) {
-                    // Remove the pog from the arena
+                    // Remove the pog from the arena and store it in selectedPog
                     let selectedPog = gameData.game.arena.splice(pogIndex, 1)[0];
 
-                    // Add the pog to the player's inventory
+                    // Add the selected pog to the player's inventory
                     addToInventory(player, selectedPog);
 
-                    // Update the textarea for the player
+                    // Determine which player's textarea to update based on the player parameter
                     let collectedPogs = player === player1 ? collectedPogsPlayer1 : collectedPogsPlayer2;
+                    // Update the textarea for the player with the name of the taken pog
                     collectedPogs.value += "Pog Taken: " + selectedPog.name + '\n';
 
-                    // Display the selected pog on the canvas
+                    // Prepare the message to be displayed on the canvas
                     let message = 'Pog taken: ' + selectedPog.name;
                     ctx.font = '20px Arial';
                     ctx.fillStyle = 'black';
+                    // Display the message on the canvas
                     ctx.fillText(message, 10, logY);
-                    logY += 20; // Move the Y position down for the next message
+                    // Move the Y position down for the next message
+                    logY += 20;
                 }
 
-                // Use the function to add a pog to a player's inventory
-                // Replace 'player' with the actual player object and 'pog' with the actual pog object
-                // addToInventory(player, pog);
-
-                // Use the function to select a pog for a player
-                // Replace 'player' with the actual player object and 'selectedPogIndex' with the index of the selected pog
-                // selectPog(player, selectedPogIndex);
                 break;
             case 1:// Knockout
                 console.log('case 1 test');
@@ -734,7 +850,7 @@ socket.on('step-game-success', (data, gameData) => {
                 if (gameData.game.turn == 0) {
                 } else {
                 };
-               
+
                 break;
             case 5://Check for winner
                 console.log('case 5 test');
@@ -756,6 +872,7 @@ socket.on('step-game-success', (data, gameData) => {
         drawFlippedPogs();
     };
 
+    // Function for end stage
     function stage_end() {
         ctx.fillStyle = 'silver';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -776,15 +893,21 @@ socket.on('step-game-success', (data, gameData) => {
     step();
 });
 
+// Listen for player count change event
 socket.on('playerCountChange', function (data) {
+    // Update the player count
     document.getElementById('readyCount').textContent = `People Ready: ${data.readyCount}/${data.totalCount}`;
 });
 
+// Listen for step game error event
 socket.on('step-game-error', (data) => {
+    // Log the data and error
     console.error('Data:', data);
     console.log('custom test error');
 });
 
+// Listen for error event
 socket.on('error', (error) => {
+    // Log the error
     console.error('An error occurred on the socket:', error);
 });
