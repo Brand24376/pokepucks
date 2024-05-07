@@ -21,7 +21,7 @@ npm i -D nodemon (Not required but makes editing this file much more convenient.
 // Start the server for testing by using 'npm run dev' while in the server folder
 // Remember to change the ip address for your formbar instance in the AUTH_URL variable
 
-//Helpful hotkeys if using VSCode:
+// Helpful hotkeys if using VSCode:
 ALT + SHIFT + F to format the code
 CTRL + / to comment out a line or block of code (you can also uncomment by selecting the code and pressing the same hotkey)
 ALT + Z to wrap text (makes it so you don't have to scroll horizontally to read the code)
