@@ -251,12 +251,12 @@ socket.on('message', (data) => {
                 ? 'post__header--user' // If the id is the same as the socket id, set the class name to 'post__header--user'
                 : 'post__header--reply' // If the id is not the same as the socket id, set the class name to 'post__header--reply'
                 }">
-                    <span class="post__header--name">${name}</span> // Set the name of the user
-                    <span class="post__header--time">${time}</span> // Set the time of the message
+                    <span class="post__header--name">${name}</span>
+                    <span class="post__header--time">${time}</span>
                     </div>
-                    <div class="post__text">${text}</div>` // Set the text of the message
+                    <div class="post__text">${text}</div>`
         } else { // If the name is the same as the default name
-            li.innerHTML = `<div class ="post__text">${text}</div>` // Set the text of the message
+            li.innerHTML = `<div class ="post__text">${text}</div>`
         };
         // Append the list item to the chat display
         document.querySelector('.chat-display').appendChild(li);
