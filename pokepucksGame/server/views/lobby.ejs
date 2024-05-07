@@ -32,10 +32,13 @@ The ejs file for the chatroom.
 
 <body>
     <main>
+
+        <!-- Title -->
         <div class="title" id="lobby-page">
             PokePucks
         </div>
 
+        <!-- Literal Lobby Page -->
         <div id="lobby-page">
             <input type="text" class="username" id="name" size="5" value="<%= sessionUser %>" readonly>
         </div>
@@ -44,10 +47,12 @@ The ejs file for the chatroom.
             <input type="text" class="code" id="room" placeholder="Room Code" size="5" maxlength="5">
         </div>
 
+        <!-- Text "Choose Room Privacy" -->
         <div class="text1" id="lobby-page">
             <label for="privacy">Choose Room Privacy</label>
         </div>
 
+        <!-- Public/Private -->
         <div class="pubpriv" id="lobby-page">
             <select id="privacy">
                 <option value="public">Public</option>
@@ -55,7 +60,8 @@ The ejs file for the chatroom.
             </select>
         </div>
 
-        <p class="active"> Active Rooms</p>
+        <!-- Text "Active Public Rooms" -->
+        <p class="active"> Active Public Rooms</p>
 
         <!-- This div shows all active rooms with the data from the server -->
         <div class="rooms" id="lobby-page">
@@ -67,19 +73,24 @@ The ejs file for the chatroom.
                     <% }); %>
         </div>
 
+        <!-- Join/Log out -->
         <div class="jout" id="lobby-page">
             <button id="join" onclick="joinRoom()">Join</button>
             <button id="logout" onclick="logout()">Log Out</button>
         </div>
 
-        <div class="craroo" id="lobby-page">
+        <!-- create Rooms -->
+        <div class="creroo" id="lobby-page">
             <button onclick="createRoom()">Create Room</button>
         </div>
 
+        <!-- Music -->
         <div class="music"><button onclick="play()">Music</button></div>
     </main>
 </body>
 <script>
+
+    // Music
     function play() {
         var audio = new Audio('music/intro.mp3')
         audio.play()
