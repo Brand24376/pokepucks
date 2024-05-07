@@ -613,6 +613,46 @@ socket.on('step-game-success', (data, gameData) => { // pass the data and gameDa
                     ctx.drawImage(whiteSide, 200, 200, 100, 100);
                 }
 
+                function drawFlippedPogs() {
+                    // This loop goes through each pog in the Pucks array
+                    for (let i = 0; i < Pucks.length; i++) {
+                        let pog = gameData.game.Pucks[i];
+                        // If the pog's side is 'up', it draws the pog on the canvas and sets gameStopped to true
+                        if (pog.side === 'up') {
+                            ctx.drawImage(whiteSide, 100, 100, 100, 100);
+                            gameStopped = true;
+                        }
+                    }
+
+                    // If gameStopped is true (meaning a pog was flipped up), it executes the following code
+                    if (gameStopped) {
+                        // Disables the step game button to pause the game
+                        const stepGameButton = document.getElementById('step-game-button');
+                        stepGameButton.disabled = true;
+
+                        // Prompts the player to pick a pog and returns the picked pog
+                        let pickedPog = promptPlayerToPickPog();
+                        // Returns the flipped pogs to the pile, excluding the picked pog
+                        returnFlippedPogsToPile(pickedPog);
+
+                        // Determines the winning player based on the current turn and adds the picked pog to the winning player's inventory
+                        let winningPlayer = gameData.game.turn === 0 ? gameData.game.players[1] : gameData.game.players[0];
+                        addToInventory(winningPlayer, pickedPog);
+
+                        // Finds the index of the picked pog in the Pucks array and removes it from the array
+                        let pogIndex = gameData.game.Pucks.findIndex(pog => pog.id === pickedPog.id);
+                        if (pogIndex !== -1) {
+                            gameData.game.Pucks.splice(pogIndex, 1);
+                        }
+
+                        // Sets gameStopped to false to indicate that no pogs are flipped up
+                        gameStopped = false;
+
+                        // Enables the step game button to resume the game
+                        stepGameButton.disabled = false;
+                    }
+                }
+
                 let logY = 300; // Y position for the log messages on the canvas
                 let collectedPogsPlayer1 = document.getElementById('CollectedPogsPlayer1');
                 let collectedPogsPlayer2 = document.getElementById('CollectedPogsPlayer2');
