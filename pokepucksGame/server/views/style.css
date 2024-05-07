@@ -1,7 +1,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Antonio Cruz
+Editors: Brandon Camacho, Antonio Cruz, Sergio Davalos
 
 <Description>
 The css for the chatroom.
@@ -12,6 +12,97 @@ The css for the chatroom.
     font-size: 1rem;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Lobby CSS in order Top-Bottom */
+.title {
+    color: black;
+    font-size: 150px;
+    margin-top: 50px;
+    border-width: 25px;
+    margin-left: 585px;
+    width: fit-content;
+    text-align: center;
+    font-weight: lighter;
+    border-style: groove;
+    border-color: yellow;
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* Username in FormBar login */
+.username {
+    width: 10%;
+    padding: 10px;
+    font-size: 25px;
+    margin-top: 40px;
+    border-width: 15px;
+    margin-left: 850px;
+    text-align: center;
+    border-style: groove;
+    border-color: rgb(241, 52, 52);
+}
+
+/* Private Room Code */
+.code {
+    width: 10%;
+    padding: 10px;
+    font-size: 25px;
+    margin-top: 15px;
+    border-width: 15px;
+    margin-left: 850px;
+    text-align: center;
+    border-style: groove;
+    border-color: rgb(252, 60, 60);
+}
+
+/* Text "Choose Room Privacy" */
+.text1 {
+    color: black;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* White Box with Choices */
+.pubpriv {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Text "Active Public Rooms" */
+.active {
+    color: black;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Black Outline Box */
+.rooms {
+    width: 25%;
+    margin-top: 15px;
+    margin-left: 710px;
+    border-style: solid;
+}
+
+/* Join/Log Out Buttons */
+.jout {
+    border: none;
+    padding: 10px;
+    margin-top: 15px;
+    margin-left: 700px;
+}
+
+/* Create Room Button */
+.creroo {
+    margin-top: 15px;
+    margin-left: 835px;
+}
+
+/* Music Buttoms */
+.music {
+    margin-top: 15px;
+    margin-left: 835px;
 }
 
 section {
@@ -25,172 +116,75 @@ section {
     justify-content: center;
 }
 
+/* All Buttons */
 button {
     width: 200px;
     height: 60px;
     background-color: yellow;
 }
+ 
+/* PastPoint ChatRoom CSS */
 
-.title {
-    color: black;
-    font-size: 150px;
-    margin-top: 50px;
-    border-width: 25px;
-    margin-left: 585px;
-    width: fit-content;
+/* Player1 Inventory */
+#CollectedPogsPlayer1 {
+    position: absolute;
+    top: 10;
+    left: 400px;
+    z-index: 2;
+ 
     text-align: center;
-    font-weight: lighter;
-    border-style: groove;
-    border-color: yellow;
+    color: black;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+ 
+    height: 150px;
+    width: 250px;
+ 
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
+    border-color: black;
+ 
+ 
 }
-
-.username {
-    width: 10%;
-    padding: 10px;
-    font-size: 25px;
-    margin-top: 40px;
-    border-width: 15px;
-    margin-left: 850px;
+ 
+/* Player2 Inventory */
+#CollectedPogsPlayer2 {
+    position: absolute;
+    top: 10px;
+    right: 400px;
+    z-index: 2;
+ 
     text-align: center;
-    border-style: groove;
-    border-color: rgb(241, 52, 52);
-
-}
-
-.code {
-    width: 10%;
-    padding: 10px;
-    font-size: 25px;
-    margin-top: 15px;
-    border-width: 15px;
-    margin-left: 850px;
-    text-align: center;
-    border-style: groove;
-    border-color: rgb(252, 60, 60);
-}
-
-.text1 {
     color: black;
-    margin-top: 15px;
-    text-align: center;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+ 
+    height: 150px;
+    width: 250px;
+ 
+    background-color: transparent;
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
+    border-color: black;
+   
+    border-color: black;
+ 
 }
 
-.pubpriv {
-    margin-top: 10px;
-    text-align: center;
-}
-
-.active {
-    color: black;
-    margin-top: 15px;
-    text-align: center;
-}
-
-.rooms {
-    width: 25%;
-    margin-top: 15px;
-    margin-left: 710px;
-    border-style: solid;
-}
-
-.jout {
-    border: none;
-    padding: 10px;
-    margin-top: 15px;
-    margin-left: 700px;
-}
-
-.craroo {
-    margin-top: 15px;
-    margin-left: 835px;
-}
-
-.music {
-    margin-top: 15px;
-    margin-left: 835px;
-}
-
-/*PastPoint ChatRoom CSS*/
-body {
-    color: black;
-    background-image: url("img/ad.png");
-}
-
-canvas {
-    height: 450px;
-    width: 1400px;
-    margin-left: 250px;
-}
-
-.strste {
-    margin-left: 550px;
-}
-
-main {
-    height: 100vh;
-    padding: 1rem;
-    display: flex;
-    flex-flow: column;
-}
-
-form {
+/* tracts Users names in current room */
+.user-list,
+.room-list,
+.activity {
     width: 100%;
-    gap: .25rem;
-    margin: auto;
-    display: flex;
+    height: 20px;
+    color: blue;
     max-width: 600px;
-    flex-flow: row nowrap;
-    justify-content: center;
+    margin-left: 850px;
+    margin-bottom: 20px;
+    padding: .75rem .25rem;
 }
 
-select {
-    width: 20%;
-}
-
-input {
-    flex-grow: 1;
-    max-width: calc(80% - .25rem);
-}
-
-button {
-    width: 20%;
-}
-
-input,
-button {
-    padding: .5rem;
-    border-radius: 10px;
-}
-
-.open-title {
-    color: black;
-    font-size: 150px;
-    margin-top: 50px;
-    border-width: 25px;
-    margin-left: 640px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}
-
-#login-page {
-    width: 1000px;
-    margin-top: 200px;
-    margin-left: 450px;
-    text-align: center;
-}
-
-#lobby-page {
-    visibility: visible;
-}
-
-#chatroom-page {
-    visibility: visible;
-}
-
-.grayBox {
-    overflow: hidden;
-}
-
+/* Chat room */
 .welcome {
     padding: 0;
     width: 500px;
@@ -207,6 +201,48 @@ button {
     background-color: #333;
 }
 
+#chatroom-page {
+    visibility: visible;
+}
+
+/* message activity */
+.activity {
+    margin-left: 5px;
+    font-style: italic;
+}
+
+/* Grey Box in the ChatRoom */
+canvas {
+    height: 450px;
+    width: 1400px;
+    margin-left: 250px;
+}
+/* Continuiation of Gray Box*/
+.grayBox {
+    overflow: hidden;
+}
+
+/* Start/Step/Leave buttons */
+.strste {
+    margin-left: 550px;
+}
+
+/* Ready up */
+#ready-checkbox {
+    margin-left: 10px;
+}
+
+/* Continuiation of Ready up */
+label[for="ready-checkbox"] {
+    font-size: 16px;
+}
+
+/* Literal Lobby page*/
+#lobby-page {
+    visibility: visible;
+}
+
+/* Posts in the chatRoom */
 .post {
     margin: .5rem;
     flex-shrink: 0;
@@ -216,16 +252,19 @@ button {
     background-color: #eee;
 }
 
+/* Continuation of the Post */
 .post--left {
     width: 60%;
     align-self: flex-start;
 }
 
+/* Continuation of the Post */
 .post--right {
     width: 60%;
     align-self: flex-end;
 }
 
+/* Continuation of the Post */
 .post__header {
     gap: .5rem;
     color: #fff;
@@ -235,22 +274,27 @@ button {
     justify-content: space-between;
 }
 
+/* Continuation of the Post */
 .post__header--user {
     background-color: blue;
 }
 
+/* Continuation of the Post */
 .post__header--reply {
     background-color: purple;
 }
 
+/* Continuation of the Post */
 .post__header--name {
     font-weight: bold;
 }
 
+/* Continuation of the Post */
 .post__header--time {
     font-size: .8rem;
 }
 
+/* Continuation of the Post */
 .post__text {
     color: #333;
     margin-top: 5px;
@@ -258,31 +302,69 @@ button {
     padding: .25rem .5rem;
 }
 
-.user-list,
-.room-list,
-.activity {
+/* Login CSS */
+
+/* PokePucks Title */
+.open-title {
+    color: black;
+    font-size: 150px;
+    margin-top: 50px;
+    border-width: 25px;
+    margin-left: 640px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* Literal Login Page */
+#login-page {
+    width: 1000px;
+    margin-top: 200px;
+    margin-left: 450px;
+    text-align: center;
+}
+
+/* Background */
+body {
+    color: black;
+    background-image: url("img/ad.png");
+    overflow: hidden;
+}
+ 
+main {
+    height: 100vh;
+    padding: 1rem;
+    display: flex;
+    flex-flow: column;
+}
+ 
+form {
     width: 100%;
-    height: 20px;
-    color: white;
+    gap: .25rem;
+    margin: auto;
+    display: flex;
     max-width: 600px;
-    margin-left: 850px;
-    margin-bottom: 20px;
-    padding: .75rem .25rem;
+    flex-flow: row nowrap;
+    justify-content: center;
 }
-
-.activity {
-    margin-left: 5px;
-    font-style: italic;
+ 
+select {
+    width: 20%;
 }
-
-#ready-checkbox {
-    margin-left: 10px;
+ 
+input {
+    flex-grow: 1;
+    max-width: calc(80% - .25rem);
 }
-
-label[for="ready-checkbox"] {
-    font-size: 16px;
+ 
+button {
+    width: 20%;
 }
-
+ 
+input,
+button {
+    padding: .5rem;
+    border-radius: 10px;
+}
+ 
 /* Game CSS */
 .blackSide {
     max-width: 0%;
@@ -290,63 +372,28 @@ label[for="ready-checkbox"] {
     visibility: hidden;
     image-rendering: auto;
 }
-
+ 
 .pokemon {
     max-width: 0%;
     max-height: 0%;
     visibility: hidden;
     image-rendering: auto;
 }
-
+ 
 #canvas {
     top: 0;
     left: 0;
     z-index: 1;
-
     position: relative;
-
 }
+ 
+/*Media Stuff*/
 
-#CollectedPogsPlayer1 {
-    position: absolute;
-    top: 0;
-    right: 100px;
-    z-index: 2;
-
-    text-align: center;
-    color: black;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: medium;
-
-    height: 150px;
-    width: 250px;
-
-    background-color: transparent;
-    background-color: rgba(255, 255, 255, 50%);
-    border-color: black;
-
-
-}
-
-#CollectedPogsPlayer2 {
-    position: absolute;
-    top: 10px;
-    right: 400px;
-    z-index: 2;
-
-    text-align: center;
-    color: black;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: medium;
-
-    height: 150px;
-    width: 250px;
-
-    background-color: transparent; 
-    background-color: transparent;
-    background-color: rgba(255, 255, 255, 50%);
-    border-color: black; 
-    
-    border-color: black;
-
+@media  (max-width: 1366px) {
+    .open-title {
+        margin-left: 400px;
+    }
+    .login-box {
+        margin-left: -250px;
+    }
 }
