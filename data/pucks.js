@@ -1,3 +1,8 @@
+
+// this js file creates a const pucks array to store all the pucks in the game. 
+// Each puck has a name, ids, type, subtype, found, img, description, and se (special effects) object.
+// Not all pucks have all of these properties, but they are all included in the array for consistency. Some pucks were not created through only pogs, so some pucks do not have ids. 
+
 const Pucks = [
     {
         name: "You",

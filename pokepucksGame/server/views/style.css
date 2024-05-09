@@ -1,8 +1,8 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Antonio Cruz
-{ 172.16.3.124:3000 }
+Editors: Brandon Camacho, Antonio Cruz, Sergio Davalos
+
 <Description>
 The css for the chatroom.
 \***************************************************************************/
@@ -14,24 +14,8 @@ The css for the chatroom.
     font-family: Arial, Helvetica, sans-serif;
 }
 
-section{
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    position: absolute;
-    align-items: center;
-    justify-content: center;
-}
-
-button{
-    background-color: yellow;
-    width: 200px;
-    height: 60px
-}
-
-.title{
+/* Lobby CSS in order Top-Bottom */
+.title {
     color: black;
     font-size: 150px;
     margin-top: 50px;
@@ -42,10 +26,13 @@ button{
     font-weight: lighter;
     border-style: groove;
     border-color: yellow;
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
-.username{
+/* Username in FormBar login */
+.username {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -55,10 +42,10 @@ button{
     text-align: center;
     border-style: groove;
     border-color: rgb(241, 52, 52);
-    
 }
 
-.code{
+/* Private Room Code */
+.code {
     width: 10%;
     padding: 10px;
     font-size: 25px;
@@ -70,119 +57,139 @@ button{
     border-color: rgb(252, 60, 60);
 }
 
-.text1{
+/* Text "Choose Room Privacy" */
+.text1 {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.pubpriv{
+/* White Box with Choices */
+.pubpriv {
     margin-top: 10px;
     text-align: center;
 }
 
-.active{
+/* Text "Active Public Rooms" */
+.active {
     color: black;
     margin-top: 15px;
     text-align: center;
 }
 
-.rooms{
+/* Black Outline Box */
+.rooms {
     width: 25%;
     margin-top: 15px;
     margin-left: 710px;
     border-style: solid;
 }
 
-.jout{
+/* Join/Log Out Buttons */
+.jout {
     border: none;
     padding: 10px;
     margin-top: 15px;
     margin-left: 700px;
 }
 
-.craroo{
+/* Create Room Button */
+.creroo {
     margin-top: 15px;
     margin-left: 835px;
 }
 
-.music{
+/* Music Buttoms */
+.music {
     margin-top: 15px;
     margin-left: 835px;
 }
 
-/*PastPoint ChatRoom CSS*/
-body{
-    color: black;
-    background-image: url("img/ad.png");
-}
-
-canvas{
-    margin-left: 250px;
-    height: 500px;
-    width: 1400px
-}
-
-.strste{
-    margin-left: 500px;
-}
-
-main {
-    height: 100vh;
-    padding: 1rem;
-    display: flex;
-    flex-flow: column;
-}
-
-form {
+section {
+    top: 0px;
+    left: 0px;
     width: 100%;
-    gap: .25rem;
-    margin: auto;
+    height: 100vh;
     display: flex;
-    max-width: 600px;
-    flex-flow: row nowrap;
+    position: absolute;
+    align-items: center;
     justify-content: center;
 }
 
-select {
-    width: 20%;
-}
-
-input {
-    flex-grow: 1;
-    max-width: calc(80% - .25rem);
-}
-
+/* All Buttons */
 button {
-    width: 20%;
+    width: 200px;
+    height: 60px;
+    background-color: yellow;
+}
+ 
+/* PastPoint ChatRoom CSS */
+
+/* Player1 Inventory */
+#CollectedPogsPlayer1 {
+    position: absolute;
+    top: 10;
+    left: 400px;
+    z-index: 2;
+ 
+    text-align: center;
+    color: black;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+ 
+    height: 150px;
+    width: 250px;
+ 
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
+    border-color: black;
+ 
+ 
+}
+ 
+/* Player2 Inventory */
+#CollectedPogsPlayer2 {
+    position: absolute;
+    top: 10px;
+    right: 400px;
+    z-index: 2;
+ 
+    text-align: center;
+    color: black;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+ 
+    height: 150px;
+    width: 250px;
+ 
+    background-color: transparent;
+    background-color: transparent;
+    background-color: rgba(255, 255, 255, 50%);
+    border-color: black;
+   
+    border-color: black;
+ 
 }
 
-input,
-button {
-    padding: .5rem;
-    border-radius: 10px;
+/* tracts Users names in current room */
+.user-list,
+.room-list,
+.activity {
+    width: 100%;
+    height: 20px;
+    color: blue;
+    max-width: 600px;
+    margin-left: 850px;
+    margin-bottom: 20px;
+    padding: .75rem .25rem;
 }
 
-#login-page {
-    visibility: visible;
-}
-
-#lobby-page {
-    visibility: visible;
-}
-
-#chatroom-page {
-    visibility: visible;
-}
-
-.grayBox{
-    margin-left: 0px;
-}
-
+/* Chat room */
 .welcome {
     padding: 0;
     width: 500px;
     flex-grow: 1;
+    height: 200px;
     display: flex;
     overflow: auto;
     max-width: 600px;
@@ -194,98 +201,199 @@ button {
     background-color: #333;
 }
 
-.post {
-    background-color: #eee;
-    border-radius: 10px;
-    padding: 0 0 .25rem;
-    margin: .5rem;
-    overflow: hidden;
-    flex-shrink: 0;
+#chatroom-page {
+    visibility: visible;
 }
 
-.post--left {
-    width: 60%;
-    align-self: flex-start;
-}
-
-.post--right {
-    width: 60%;
-    align-self: flex-end;
-}
-
-.post__header {
-    color: #fff;
-    padding: .25rem .5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: .5rem;
-}
-
-.post__header--user {
-    background-color: blue;
-}
-
-.post__header--reply {
-    background-color: purple;
-}
-
-.post__header--name {
-    font-weight: bold;
-}
-
-.post__header--time {
-    font-size: .8rem;
-}
-
-.post__text {
-    text-align: center;
-    margin-top: 5px;
-    color: #333;
-    padding: .25rem .5rem;
-}
-
-.user-list,
-.room-list,
-.activity {
-    color: white;
-    width: 100%;
-    min-height: 2.65rem;
-    margin-left: 850px;
-    max-width: 600px;
-    padding: .75rem .25rem;
-}
-
+/* message activity */
 .activity {
     margin-left: 5px;
     font-style: italic;
 }
 
+/* Grey Box in the ChatRoom */
+canvas {
+    height: 450px;
+    width: 1400px;
+    margin-left: 250px;
+}
+/* Continuiation of Gray Box*/
+.grayBox {
+    overflow: hidden;
+}
+
+/* Start/Step/Leave buttons */
+.strste {
+    margin-left: 550px;
+}
+
+/* Ready up */
 #ready-checkbox {
     margin-left: 10px;
 }
 
+/* Continuiation of Ready up */
 label[for="ready-checkbox"] {
     font-size: 16px;
 }
 
-/* Game CSS */
-.blackSide {
-    image-rendering: auto;
-    visibility: hidden;
-    max-height: 0%;
-    max-width: 0%;
-}
-.pokemon {
-    image-rendering: auto;
-    visibility: hidden;
-    max-height: 0%;
-    max-width: 0%;
+/* Literal Lobby page*/
+#lobby-page {
+    visibility: visible;
 }
 
+/* Posts in the chatRoom */
+.post {
+    margin: .5rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 0 0 .25rem;
+    background-color: #eee;
+}
+
+/* Continuation of the Post */
+.post--left {
+    width: 60%;
+    align-self: flex-start;
+}
+
+/* Continuation of the Post */
+.post--right {
+    width: 60%;
+    align-self: flex-end;
+}
+
+/* Continuation of the Post */
+.post__header {
+    gap: .5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: .25rem .5rem;
+    justify-content: space-between;
+}
+
+/* Continuation of the Post */
+.post__header--user {
+    background-color: blue;
+}
+
+/* Continuation of the Post */
+.post__header--reply {
+    background-color: purple;
+}
+
+/* Continuation of the Post */
+.post__header--name {
+    font-weight: bold;
+}
+
+/* Continuation of the Post */
+.post__header--time {
+    font-size: .8rem;
+}
+
+/* Continuation of the Post */
+.post__text {
+    color: #333;
+    margin-top: 5px;
+    text-align: center;
+    padding: .25rem .5rem;
+}
+
+/* Login CSS */
+
+/* PokePucks Title */
+.open-title {
+    color: black;
+    font-size: 150px;
+    margin-top: 50px;
+    border-width: 25px;
+    margin-left: 640px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* Literal Login Page */
+#login-page {
+    width: 1000px;
+    margin-top: 200px;
+    margin-left: 450px;
+    text-align: center;
+}
+
+/* Background */
+body {
+    color: black;
+    background-image: url("img/ad.png");
+    overflow: hidden;
+}
+ 
+main {
+    height: 100vh;
+    padding: 1rem;
+    display: flex;
+    flex-flow: column;
+}
+ 
+form {
+    width: 100%;
+    gap: .25rem;
+    margin: auto;
+    display: flex;
+    max-width: 600px;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+ 
+select {
+    width: 20%;
+}
+ 
+input {
+    flex-grow: 1;
+    max-width: calc(80% - .25rem);
+}
+ 
+button {
+    width: 20%;
+}
+ 
+input,
+button {
+    padding: .5rem;
+    border-radius: 10px;
+}
+ 
+/* Game CSS */
+.blackSide {
+    max-width: 0%;
+    max-height: 0%;
+    visibility: hidden;
+    image-rendering: auto;
+}
+ 
+.pokemon {
+    max-width: 0%;
+    max-height: 0%;
+    visibility: hidden;
+    image-rendering: auto;
+}
+ 
 #canvas {
-    position: relative;
     top: 0;
     left: 0;
     z-index: 1;
+    position: relative;
+}
+ 
+/*Media Stuff*/
+
+@media  (max-width: 1366px) {
+    .open-title {
+        margin-left: 400px;
+    }
+    .login-box {
+        margin-left: -250px;
+    }
 }

@@ -2,7 +2,7 @@
 /****************************** Script Header ******************************\
 Project: PokePucks
 Author: Brandon Camacho
-Editors: Brandon Camacho, Logan Cruz
+Editors: Brandon Camacho, Logan Cruz, Antonio Cruz, Sergio Davalos 
 
 <Description>
 The ejs file for the chatroom.
@@ -25,15 +25,21 @@ The ejs file for the chatroom.
 
 <body>
     <main>
+
+        <!-- user list -->
+        <div class="user">
+            <p class="user-list"></p>
+        </div>
+
+        <!-- Chat Chat -->
         <div class="welcome">
             <ul class="chat-display"></ul>
         </div>
-        <div class="leaveButton" id="chatroom-page">
-
-            <p class="user-list"></p>
+        <div class="message" id="chatroom-page">
 
             <p class="activity"></p>
 
+            <!-- what you right sent to chat room -->
             <form class="form-msg">
                 <input type="text" id="message" placeholder="Your message" required>
                 <button type="submit">Send</button>
@@ -45,8 +51,6 @@ The ejs file for the chatroom.
             <img src="img/squirtle.svg" id="squirtle" class="pokemon" height="100" width="100" />
             <img src="img/whiteSide.png" alt="" class="blackSide" id="whiteSide">
             <!--
-
-            
             <img src="img/whiteRotation1.png" alt="" class="blackSide" id="whiteRotation1">
             <img src="img/whiteRotation2.png" alt="" class="blackSide" id="whiteRotation2">
             <img src="img/whiteRotation3.png" alt="" class="blackSide" id="whiteRotation3">
@@ -58,25 +62,38 @@ The ejs file for the chatroom.
 
         </div>
 
+        <!-- leave/step/start game -->
         <div class="strste">
-            <button onclick="stepGameClient()">Step Game</button>
-            <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game</button>
             <button onclick="leaveRoom()">Leave Room</button>
             <button id="step-game-button" disabled="true" onclick="stepGameClient()">Step Game</button>
-            <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game</button>
-            <button id="test-start-game-button">Test Start Game</button>
-
+            <button id="start-game-button" disabled="true" onclick="startGameClient()">Start Game (2 People needed to
+                Start the Game)</button>
             <label for="ready-checkbox">I'm ready:</label>
             <input type="checkbox" id="ready-checkbox">
+            <p id="readyCount">People Ready: 0/0</p>
         </div>
 
+        <!-- this creates ids for the player's inventory.  -->
+        <textarea id="CollectedPogsPlayer1" rows="3" cols="5" style="overflow:auto;" 
+            readonly> Players 1 inventory: </textarea>
+        <textarea id="CollectedPogsPlayer2" rows="3" cols="5" style="overflow:auto;"
+            readonly> Players 2 inventory: </textarea>
+            
+
+            <!-- creates a music button that plays the music when clicked  -->
+
         <div class="music"><button onclick="play()">music</button></div>
+
+        
+        <!-- Music -->
         <script>
             function play() {
                 var audio = new Audio('music/intro.mp3')
                 audio.play()
-            }
+            };
         </script>
+
+
     </main>
 </body>
 

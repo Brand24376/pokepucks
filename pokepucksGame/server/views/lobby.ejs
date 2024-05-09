@@ -22,10 +22,9 @@ The ejs file for the chatroom.
     <script defer src="app.js"></script>
     <!-- "defer" tells the file to not load the JS until everything else is essentially loaded -->
 </head>
-<style>
+<style class="image">
     body {
-        background-image: url("img/ad.ng");
-        background-size: cover;
+        margin: auto;
         width: 100%;
         height: 100%;
     }
@@ -33,10 +32,13 @@ The ejs file for the chatroom.
 
 <body>
     <main>
+
+        <!-- Title -->
         <div class="title" id="lobby-page">
             PokePucks
         </div>
 
+        <!-- Literal Lobby Page -->
         <div id="lobby-page">
             <input type="text" class="username" id="name" size="5" value="<%= sessionUser %>" readonly>
         </div>
@@ -45,10 +47,12 @@ The ejs file for the chatroom.
             <input type="text" class="code" id="room" placeholder="Room Code" size="5" maxlength="5">
         </div>
 
+        <!-- Text "Choose Room Privacy" -->
         <div class="text1" id="lobby-page">
             <label for="privacy">Choose Room Privacy</label>
         </div>
 
+        <!-- Public/Private -->
         <div class="pubpriv" id="lobby-page">
             <select id="privacy">
                 <option value="public">Public</option>
@@ -56,8 +60,10 @@ The ejs file for the chatroom.
             </select>
         </div>
 
-        <p class="active"> Active Rooms</p>
+        <!-- Text "Active Public Rooms" -->
+        <p class="active"> Active Public Rooms</p>
 
+        <!-- This div shows all active rooms with the data from the server -->
         <div class="rooms" id="lobby-page">
             <% activeRooms.forEach(function(room, index) { %>
                 <span class="room-code" onclick="enterRoomClicked('<%= room %>')">
@@ -67,38 +73,42 @@ The ejs file for the chatroom.
                     <% }); %>
         </div>
 
+        <!-- Join/Log out -->
         <div class="jout" id="lobby-page">
             <button id="join" onclick="joinRoom()">Join</button>
             <button id="logout" onclick="logout()">Log Out</button>
         </div>
 
-        <div class="craroo" id="lobby-page">
+        <!-- create Rooms -->
+        <div class="creroo" id="lobby-page">
             <button onclick="createRoom()">Create Room</button>
         </div>
 
-        <div class="music"><button onclick="play()">music</button></div>
+        <!-- Music -->
+        <div class="music"><button onclick="play()">Music</button></div>
     </main>
 </body>
 <script>
+
+    // Music
     function play() {
         var audio = new Audio('music/intro.mp3')
         audio.play()
     }
+    
+    // let currentIndex = 0;
+    // const images = ["url(img/ash.png)", "url('img/fhc.png')", "url(img/char.png)", "url('img/fgh.png')", "url('img/jfh.png')", "url('img/gren.png')", "url(img/lucario.png)"]
+    // const body = document.querySelector('body')
 
-    let currentIndex = 0;
-    const images = ["url('img/fhc.png')", "url('img/fgh.png')", "url('img/jfh.png')", "url('img/gren.png')"]
-    const body = document.querySelector('body')
+    // function changeBg() {
+    //     const bg = images[currentIndex];
+    //     body.style.backgroundImage = bg;
+    //     currentIndex = (currentIndex + 1) % images.length;
+    //     console.log(currentIndex);
+    // };
 
-    function changeBg() {
-        const bg = images[currentIndex];
-        body.style.backgroundImage = bg;
-        currentIndex = (currentIndex + 1) % images.length;
-        console.log(currentIndex);
-    };
-
-    changeBg();
-    setInterval(changeBg, 3000) // Change this to 2000 for 2 seconds
-
+    // changeBg();
+    // setInterval(changeBg, 2820) // Every 1000 equals 1 second
 </script>
 
 </html>
