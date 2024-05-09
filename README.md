@@ -5,3 +5,6 @@ PokePucks is a game of collecting, trading, and staking Pokemon themed 'pucks'. 
 
 ## **More Info**
 This is currently an online version of the game so not all features are implemented yet and there may be some differences between the physical version of PokePucks. For additional info on the game, download the repository and open index.html.
+
+## **Information on how to Run the Game**
+Go to PokePucks Wiki page linked here: https://github.com/csmith1188/pokepucks/wiki/Welcome-to-Pok%C3%A9Pucks to learn how to run the game.
